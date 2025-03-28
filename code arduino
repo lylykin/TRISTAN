@@ -1,0 +1,96 @@
+/*
+  Read the 18 channels of spectral light over I2C using the Spectral Triad
+  By: Nathan Seidle
+  SparkFun Electronics
+  Date: October 25th, 2018
+  License: MIT. See license file for more information but you can
+  basically do whatever you want with this code.
+
+  This example shows how to output the raw sensor values. This is probably never needed since the 
+  calibrated values are tuned to each sensor. But it does run faster (2 bytes per channel instead of 4)
+  
+  Feel like supporting open source hardware?
+  Buy a board from SparkFun! https://www.sparkfun.com/products/15050
+
+  Hardware Connections:
+  Plug a Qwiic cable into the Spectral Triad and a BlackBoard
+  If you don't have a platform with a Qwiic connection use the SparkFun Qwiic Breadboard Jumper (https://www.sparkfun.com/products/14425)
+  Open the serial monitor at 115200 baud to see the output
+*/
+
+#include "SparkFun_AS7265X.h" 
+#include <Wire.h>
+
+AS7265X sensor;
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println("AS7265x Spectral Triad Example");
+
+  if (sensor.begin() == false)
+  {
+    Serial.println("Sensor does not appear to be connected. Please check wiring. Freezing...");
+    while (1);
+  }
+
+  Wire.setClock(400000);
+  sensor.disableIndicator();
+
+  Serial.println("A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L");
+
+  // Variables pour la moyenne
+  float a = 0.0, b = 0.0, c = 0.0, d = 0.0, e = 0.0, f = 0.0, g = 0.0, h = 0.0;
+  float r = 0.0, i = 0.0, s = 0.0, j = 0.0, t = 0.0, u = 0.0, v = 0.0, w = 0.0;
+  float k = 0.0, l = 0.0;
+  int somme = 10;
+
+  // Prendre 10 mesures et faire la somme
+  for (int i = 0; i < somme; i++) {
+    sensor.takeMeasurements(); 
+
+    a += sensor.getA();
+    b += sensor.getB();
+    c += sensor.getC();
+    d += sensor.getD();
+    e += sensor.getE();
+    f += sensor.getF();
+    g += sensor.getG();
+    h += sensor.getH();
+    r += sensor.getR();
+    i += sensor.getI();
+    s += sensor.getS();
+    j += sensor.getJ();
+    t += sensor.getT();
+    u += sensor.getU();
+    v += sensor.getV();
+    w += sensor.getW();
+    k += sensor.getK();
+    l += sensor.getL();
+  }
+
+  // Afficher la moyenne des 10 mesures
+  Serial.print(a / somme); Serial.print(",");
+  Serial.print(b / somme); Serial.print(",");
+  Serial.print(c / somme); Serial.print(",");
+  Serial.print(d / somme); Serial.print(",");
+  Serial.print(e / somme); Serial.print(",");
+  Serial.print(f / somme); Serial.print(",");
+  Serial.print(g / somme); Serial.print(",");
+  Serial.print(h / somme); Serial.print(",");
+  Serial.print(r / somme); Serial.print(",");
+  Serial.print(i / somme); Serial.print(",");
+  Serial.print(s / somme); Serial.print(",");
+  Serial.print(j / somme); Serial.print(",");
+  Serial.print(t / somme); Serial.print(",");
+  Serial.print(u / somme); Serial.print(",");
+  Serial.print(v / somme); Serial.print(",");
+  Serial.print(w / somme); Serial.print(",");
+  Serial.print(k / somme); Serial.print(",");
+  Serial.println(l / somme);
+
+}
+
+void loop() {
+  // On ne fait rien, car on veut une seule moyenne
+}
