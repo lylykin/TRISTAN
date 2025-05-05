@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:tristapp/page/userpage.dart';
+import 'package:tristapp/widget/bincard.dart';
 
 void main() {
   runApp(const MainApp());
@@ -9,55 +12,57 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage()
-
-        );
+    return const MaterialApp(home: HomePage());
   }
 }
 
-class HomePage extends StatelessWidget{
-
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build (BuildContext context) {
-
-    return Scaffold(
-      body : BinCard()
-    );
-  } 
+  State<HomePage> createState() => _HomePageState();
 }
 
-class BinCard extends StatelessWidget{
-//issue : I need to resize the card, and to make the icon bigger, or to insert a self-made image for the design.
-
-  const BinCard({super.key});
+class _HomePageState extends State<HomePage> {
+  var index = 0;
+  List<Widget> pagelist = [UserPage(), BinCard(), UserPage()];
 
   @override
   Widget build(BuildContext context) {
-    return Center (
-        child: Card(
-          
-          elevation: 20,  //puts shadowing under the card
-          color: Color.fromARGB(255, 149, 214, 151),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          body: Row(
             children: [
-
-              Text("coucou, je suis un test"),
-              ListTile(
-                leading: Icon(Icons.delete),
-                title: Text("Sélectionner votre borne"),  
-                )
+              SafeArea(
+                child: NavigationRail(
+                  destinations: [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home),
+                      label: Text("ta mère la homepage"),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings),
+                      label: Text("ta mère le setting"),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.favorite),
+                      label: Text("ta mère la favorite"),
+                    ),
+                  ],
+                  selectedIndex: index,
+                  onDestinationSelected: (value) {
+                    setState(() {
+                      index = value;
+                    });
+                  },
+                ),
+              ),
+              Expanded(child: Container(child: pagelist[index])),
             ],
           ),
-        ),
+        );
+      },
     );
   }
 }
-
