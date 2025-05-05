@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:tristapp/page/binselectpage.dart';
+import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
-import 'package:tristapp/widget/bincard.dart';
 
 void main() {
   runApp(const MainApp());
@@ -25,7 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var index = 0;
-  List<Widget> pagelist = [UserPage(), BinCard(), UserPage()];
+  List<Widget> pagelist = [UserPage(), BinSelectPage(), MapPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                       label: Text("ta mère la homepage"),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.settings),
+                      icon: Icon(Icons.delete),
                       label: Text("ta mère le setting"),
                     ),
                     NavigationRailDestination(
