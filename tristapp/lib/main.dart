@@ -15,12 +15,22 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "TRISTAN",
-      home: HomePage(),
-
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        brightness: Brightness.light, // erreur si on met dark
+      home: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/2fix_green_background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: HomePage(),
+        ),
       ),
+
+      //theme: ThemeData(
+      //colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      //brightness: Brightness.light, // erreur si on met dark
+      // ),
     );
   }
 }
@@ -40,36 +50,34 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text("ta mère la homepage"),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.delete),
-                      label: Text("ta mère le setting"),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text("ta mère la favorite"),
-                    ),
-                  ],
-                  selectedIndex: index,
-                  onDestinationSelected: (value) {
-                    setState(() {
-                      index = value;
-                    });
-                  },
-                ),
+        return Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text("ta mère la homepage"),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.delete),
+                    label: Text("ta mère le setting"),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text("ta mère la favorite"),
+                  ),
+                ],
+                selectedIndex: index,
+                onDestinationSelected: (value) {
+                  setState(() {
+                    index = value;
+                  });
+                },
               ),
-              Expanded(child: Container(child: pagelist[index])),
-            ],
-          ),
+            ),
+            Expanded(child: Container(child: pagelist[index])),
+          ],
         );
       },
     );
