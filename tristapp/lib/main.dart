@@ -13,7 +13,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: HomePage());
+    return MaterialApp(
+      title: "TRISTAN",
+      home: HomePage(),
+
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        brightness: Brightness.light, // erreur si on met dark
+      ),
+    );
   }
 }
 

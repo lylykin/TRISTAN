@@ -19,11 +19,25 @@ class BinCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Column(
-              children: [Icon(Icons.delete), Text("Sélectionner la borne")],
+              children: [
+                Image.asset(
+                  'assets/trash_img.jpg',
+                ), //evidemment cette image est provisoire
+                FilledButton(
+                  onPressed: ButtonPress,
+                  child: Text("Sélectionner la borne"),
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+}
+
+Widget ButtonPress() {
+  return Text(
+    "je suis pressséééé(je ne sers a rien sauf à éviter la fonction)",
+  );
 }
