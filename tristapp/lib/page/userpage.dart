@@ -8,9 +8,9 @@ class UserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        UserCard("Nom d'utilisafeur"),
-        Text("identifiant : "),
-        Text("Score"),
+        UserCard(refText: "Nom d'utilisafeur : "),
+        UserCard(refText: "identifiant : "),
+        UserCard(refText: "Score : "),
       ],
     );
   }
