@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class BinCard extends StatelessWidget {
-  //issue : I need to resize the card, and to make the icon bigger, or to insert a self-made image for the design.
-
   const BinCard({super.key});
 
   @override

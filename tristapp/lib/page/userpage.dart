@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/widget/usercard.dart';
 
-class UserPage extends StatelessWidget{
-
+class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
   @override
-  Widget build (BuildContext context){
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Mon compte"),
+        UserCard("Nom d'utilisafeur"),
         Text("identifiant : "),
         Text("Score"),
-        ] 
-      ,);
-    }
+      ],
+    );
+  }
 }
