@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/page/binpage.dart';
 
 class BinCard extends StatelessWidget {
   const BinCard({super.key});
@@ -22,7 +23,12 @@ class BinCard extends StatelessWidget {
                   'assets/trash_img.jpg',
                 ), //evidemment cette image est provisoire
                 FilledButton(
-                  onPressed: ButtonPress,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BinPage()),
+                    );
+                  },
                   child: Text("Sélectionner la borne"),
                 ),
               ],
@@ -32,10 +38,4 @@ class BinCard extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget ButtonPress() {
-  return Text(
-    "je suis pressséééé(je ne sers a rien sauf à éviter la fonction)",
-  );
 }

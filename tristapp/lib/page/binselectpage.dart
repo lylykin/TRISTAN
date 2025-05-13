@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/page/binpage.dart';
 import 'package:tristapp/widget/bincard.dart';
 
 class BinSelectPage extends StatelessWidget {
