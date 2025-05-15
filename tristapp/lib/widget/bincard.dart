@@ -19,9 +19,17 @@ class BinCard extends StatelessWidget {
           children: [
             Column(
               children: [
-                Image.asset(
-                  'assets/trash_img.jpg',
-                ), //evidemment cette image est provisoire
+                Container( // permet d'afficher l'image dans un widget dont la déco est personalisable
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('assets/trash_img.jpg'), //evidemment cette image est provisoire
+                    ),
+                  ),
+                ),
+                SizedBox(height: 6,),
                 FilledButton(
                   onPressed: () {
                     Navigator.push(
@@ -31,6 +39,7 @@ class BinCard extends StatelessWidget {
                   },
                   child: Text("Sélectionner la borne"),
                 ),
+                SizedBox(height: 6,),
               ],
             ),
           ],

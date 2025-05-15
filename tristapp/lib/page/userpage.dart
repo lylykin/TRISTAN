@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/widget/mappininfo.dart';
 import 'package:tristapp/widget/usercard.dart';
 
 class UserPage extends StatelessWidget {

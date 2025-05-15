@@ -27,10 +27,10 @@ class MainApp extends StatelessWidget {
         ),
       ),
 
-      //theme: ThemeData(
-      //colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      //brightness: Brightness.light, // erreur si on met dark
-      // ),
+      theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      brightness: Brightness.light, // erreur si on met dark
+      ),
     );
   }
 }
@@ -64,8 +64,8 @@ class _HomePageState extends State<HomePage> {
                     label: Text("ta mère le setting"),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text("ta mère la favorite"),
+                    icon: Icon(Icons.map),
+                    label: Text("ta mère la map"),
                   ),
                 ],
                 selectedIndex: index,
