@@ -8,23 +8,37 @@ class MapPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        /*
-        FlutterMap(
-          options: MapOptions(
-            initialCenter: LatLng(45.75762368042102, 4.848624249247964), // Centre la map sur Lyon
-            maxZoom: 10
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+    return Container(
+      /*
+          FlutterMap(
+            options: MapOptions(
+              initialCenter: LatLng(45.75762368042102, 4.848624249247964), // Centre la map sur Lyon
+              maxZoom: 10
             ),
-          ],
-        ),*/
-        MapPinInfo(),
-      ],
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'dev.fleaflet.flutter_map.example',
+              ),
+            ],
+          ),*/
+      decoration: BoxDecoration(
+        image: DecorationImage(image: AssetImage("tristapp/assets/map.png"))
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top:200,
+            left: 200,
+            child: MapPinInfo(),
+          ),
+          Positioned(
+            top:300,
+            left: 300,
+            child: MapPinInfo(),
+          ),
+        ],
+      ),
     );
   }
 }
