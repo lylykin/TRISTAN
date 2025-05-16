@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pagelist = [
     UserPage(),
     BinSelectPage(),
-    MapPage(lat: 200, long: 300),
+    MapPage(lat: 0.3, long: 0.3),
   ];
 
   @override
