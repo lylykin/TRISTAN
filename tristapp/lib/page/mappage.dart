@@ -23,7 +23,7 @@ class MapPage extends StatelessWidget {
             ],
           ),*/
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage("tristapp/assets/map.png"))
+        image: DecorationImage(image: AssetImage("assets/map.png"))
       ),
       child: Stack(
         children: [
