@@ -28,8 +28,8 @@ class MainApp extends StatelessWidget {
       ),
 
       theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      brightness: Brightness.light, // erreur si on met dark
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+        brightness: Brightness.light, // erreur si on met dark
       ),
     );
   }
@@ -44,7 +44,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var index = 0;
-  List<Widget> pagelist = [UserPage(), BinSelectPage(), MapPage()];
+  List<Widget> pagelist = [
+    UserPage(),
+    BinSelectPage(),
+    MapPage(lat: 200, long: 300),
+  ];
 
   @override
   Widget build(BuildContext context) {

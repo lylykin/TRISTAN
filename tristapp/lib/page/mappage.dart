@@ -4,7 +4,9 @@ import 'package:tristapp/widget/mappininfo.dart';
 // import 'package:latlong2/latlong.dart';
 
 class MapPage extends StatelessWidget {
-  const MapPage({super.key});
+  final double? lat;
+  final double? long;
+  const MapPage({super.key, this.lat, this.long});
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +25,12 @@ class MapPage extends StatelessWidget {
             ],
           ),*/
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage("assets/map.png"))
+        image: DecorationImage(image: AssetImage("assets/map.png")),
       ),
       child: Stack(
         children: [
-          Positioned(
-            top:200,
-            left: 200,
-            child: MapPinInfo(),
-          ),
-          Positioned(
-            top:300,
-            left: 300,
-            child: MapPinInfo(),
-          ),
+          Positioned(top: lat, left: long, child: MapPinInfo()),
+          // Positioned(top: lat, left: long, child: MapPinInfo()),
         ],
       ),
     );
