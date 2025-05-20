@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+// import 'package:flutter/rendering.dart';
 import 'package:tristapp/page/binselectpage.dart';
 import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
@@ -47,7 +47,10 @@ class _HomePageState extends State<HomePage> {
   List<Widget> pagelist = [
     UserPage(),
     BinSelectPage(),
-    MapPage(lat: 0.3, long: 0.3),
+    MapPage(stationList: [
+      (lat: 45.780722, long: 4.873583, stationName : "Tristan")
+      ],
+    ),
   ];
 
   @override

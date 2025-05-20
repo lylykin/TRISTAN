@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:tristapp/page/binpage.dart';
 
 class MapPinInfo extends StatefulWidget {
-  final int? lat;
-  final int? long;
+  final double? lat;
+  final double? long;
+  final String? stationName;
 
-  const MapPinInfo({super.key, this.lat, this.long});
+  const MapPinInfo({super.key, this.lat, this.long, this.stationName});
 
   @override
   State<MapPinInfo> createState() => _MapPinInfoState();
 }
 
 class _MapPinInfoState extends State<MapPinInfo> {
-  OverlayPortalController _PinMapOverlayController = OverlayPortalController();
+  OverlayPortalController _pinMapOverlayController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: _PinMapOverlayController.toggle,
-      child: OverlayPortal(
+    final double? lat = widget.lat;
+    final double? long = widget.long;
+    final String? stationName = widget.stationName;
+    return OverlayPortal(
         // Crée un widget flottant, déclanché si bind à un pin sur la carte
-        controller: _PinMapOverlayController,
+        controller: _pinMapOverlayController,
         overlayChildBuilder: (BuildContext context) {
           return Positioned(
             top: 50,
-            left: 100,
+            left: 150,
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
@@ -36,8 +38,9 @@ class _MapPinInfoState extends State<MapPinInfo> {
                 child: Column(
                   children: [
                     // Besoin de changer les couleurs du texte !
-                    Text("Nom de la borne"),
-                    Text("Coordonnées de la borne"),
+                    Text(stationName.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text("Latitude : $lat\nLongitude : $long"),
+                    SizedBox(height: 10,),
                     FilledButton(
                       onPressed: () {
                         Navigator.push(
@@ -53,8 +56,13 @@ class _MapPinInfoState extends State<MapPinInfo> {
             ),
           );
         },
-        child: Icon(Icons.pin_drop),
-      ),
+        child : FilledButton(
+          onPressed: _pinMapOverlayController.toggle,
+          style: FilledButton.styleFrom(
+            padding: EdgeInsets.zero,  // pas de padding interne
+          ),
+          child:  Icon(Icons.pin_drop),
+      ), 
     );
   }
 }
