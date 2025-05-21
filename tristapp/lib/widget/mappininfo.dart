@@ -14,7 +14,7 @@ class MapPinInfo extends StatefulWidget {
 }
 
 class _MapPinInfoState extends State<MapPinInfo> {
-  OverlayPortalController _pinMapOverlayController = OverlayPortalController();
+  final OverlayPortalController _pinMapOverlayController = OverlayPortalController();
 
   @override
   Widget build(BuildContext context) {

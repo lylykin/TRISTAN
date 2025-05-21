@@ -22,8 +22,7 @@ class _MapPageState extends State<MapPage> {
 
     MapController mapController = MapController();
 
-    return Container(
-      child: FlutterMap(
+    return FlutterMap(
         mapController: mapController,
         options: MapOptions(
           initialCenter: LatLng(45.75762368042102, 4.848624249247964), // Centre la map sur Lyon
@@ -46,7 +45,6 @@ class _MapPageState extends State<MapPage> {
             )
           ]),
         ]
-      ),
-    );
+      );
   }
 }

@@ -6,11 +6,14 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userName = "Stéphane Delafuente";
+    int userId = 4269;
+    double score = 2; // A récupérer dans un widget avec state depuis la database
     return Column(
       children: [
-        UserCard(refText: "Nom d'utilisafeur : "),
-        UserCard(refText: "identifiant : "),
-        UserCard(refText: "Score : "),
+        UserCard(refText: "Nom d'utilisafeur : $userName"),
+        UserCard(refText: "identifiant : $userId"),
+        UserCard(refText: "Score : $score"),
       ],
     );
   }
