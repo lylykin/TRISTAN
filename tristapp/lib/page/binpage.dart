@@ -14,6 +14,8 @@ class BinPage extends StatelessWidget {
         title: Text("Poubelle Tristan"),
         centerTitle: true,
         foregroundColor: Theme.of(context).colorScheme.primary,
+        elevation: 10,
+        scrolledUnderElevation: 50,
         actions: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -25,15 +27,13 @@ class BinPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            child: Expanded(
-              child: ListView.builder(
-                itemCount: 20, // Nombre de données captées (doit être lié dynamiquement)
-                itemBuilder: (BuildContext context, int index) {
-                  return ItemShow(index: index,);
-                },
-              ),
-            )
+          Expanded(
+            child: ListView.builder(
+              itemCount: 20, // Nombre de données captées (doit être lié dynamiquement)
+              itemBuilder: (BuildContext context, int index) {
+                return ItemShow(index: index,);
+              },
+            ),
           ),
         ],
       ),
