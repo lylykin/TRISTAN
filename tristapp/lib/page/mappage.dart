@@ -47,8 +47,8 @@ class _MapPageState extends State<MapPage> {
               height: 30,
               point: LatLng(lat, long),
               child: MapPinInfo(
-                lat: (lat.toInt()),
-                long: (long.toInt()),
+                lat: (lat),
+                long: (long),
                 //key: stationName,
               ),
             ),

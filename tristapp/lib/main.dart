@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:tristapp/page/binselectpage.dart';
 import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:tristapp/data/sensordata.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: "secret_dont_look_at_me.env");
   runApp(const MainApp());
+  subscribeToSparkfun();
 }
 
 class MainApp extends StatelessWidget {

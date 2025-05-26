@@ -7,10 +7,14 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
+  dotenv: ^4.2.0
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.2.1
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
+  os: ^1.0.1
+  pocketbase: ^0.22.0
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +25,4 @@ flutter:
   uses-material-design: true
   assets: 
   - assets/
+  - secret_dont_look_at_me.env
