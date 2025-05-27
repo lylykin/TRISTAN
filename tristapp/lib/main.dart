@@ -10,6 +10,7 @@ Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
   runApp(const MainApp());
   subscribeToSparkfun();
+  subscribeToGps();
 }
 
 class MainApp extends StatelessWidget {
