@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
     UserPage(),
     BinSelectPage(),
     MapPage(stationList: [
-      (lat: 45.780722, long: 4.873583, stationName : "Tristan")
+      (lat: 45.780722, long: 4.873583, stationName : "Tristan"), (lat: 46.0, long: 5.0, stationName : "DEBUG")
       ],
     ),
   ];

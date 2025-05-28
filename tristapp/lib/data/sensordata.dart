@@ -24,7 +24,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final PocketBase pb = PocketBase('http://127.0.0.1:8090');
 final ValueNotifier<Map<String, dynamic>?> sparkfunDataNotifier = ValueNotifier(null);
-final ValueNotifier<Map<String, dynamic>?> gpsDataNotifier = ValueNotifier(null);
+final ValueNotifier<Map<String, dynamic>?> gpsDataNotifier = ValueNotifier(null); // Valeurs temps réel communiquées avec l'app
+final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier = ValueNotifier([]);
+final ValueNotifier<List<Map<String, dynamic>?>> gpsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
 
 // (Optionally) authenticate
 Future<void> authenticateAdmin() async {
@@ -70,6 +72,44 @@ void subscribeToGps() async {
     print("Subscription done");
   } catch (e) {
     print('Error while subscribing to PocketBase : $e');
+  }
+}
+
+void fetchSparkfunData() async {
+  try {
+    await authenticateAdmin();
+    print("Authenticated, fetching from sparkfun...");
+    final resultList = await pb.collection('sparkfun').getFullList(
+      sort: '-updated', // Liste triée par ordre de mise à jour
+    );
+    List<Map<String, dynamic>?> recordsList = [];
+    for (RecordModel record in resultList) { // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+      recordsList.add(record.toJson());
+    }
+    print(recordsList);
+    sparkfunHistoryNotifier.value = recordsList;
+    print("Fetch done for sparkfun");
+  } catch (e) {
+    print('Error while fetching full list from PocketBase : $e');
+  }
+}
+
+void fetchGpsData() async {
+  try {
+    await authenticateAdmin();
+    print("Authenticated, fetching from gps...");
+    final resultList = await pb.collection('gps').getFullList( // Récupère la liste complète
+      sort: '-updated',
+    );
+    List<Map<String, dynamic>?> recordsList = [];
+    for (RecordModel record in resultList) { // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+      recordsList.add(record.toJson());
+    }
+    print(recordsList);
+    gpsHistoryNotifier.value = recordsList;
+    print("Fetch done for gps");
+  } catch (e) {
+    print('Error while fetching full list from PocketBase : $e');
   }
 }
 

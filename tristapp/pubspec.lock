@@ -227,14 +227,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  os:
-    dependency: "direct main"
-    description:
-      name: os
-      sha256: e53a56bc3a71a274e11160a8e31463a2f076fe5d811c008638a69f3d12961128
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path:
     dependency: transitive
     description:

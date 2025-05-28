@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/widget/reloadbutton.dart';
 import 'package:tristapp/widget/returnbutton.dart';
 import 'package:tristapp/widget/itemshow.dart';
 import 'package:tristapp/data/sensordata.dart';
@@ -10,9 +11,9 @@ class BinPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<String, dynamic>?>(
-      valueListenable: sparkfunDataNotifier,
-      builder: (context, sparkfunData, child) {
+    return ValueListenableBuilder<List<Map<String, dynamic>?>>(
+      valueListenable: sparkfunHistoryNotifier,
+      builder: (context, sparkfunDataHistory, child) {
         return Scaffold(
           appBar: AppBar(
             title: Text("Poubelle Tristan"),
@@ -23,7 +24,7 @@ class BinPage extends StatelessWidget {
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Returnbutton(),
+                child: ReloadButton(),
               )
             ],
           ),
@@ -33,9 +34,9 @@ class BinPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: 20, // Nombre de données captées (doit être lié dynamiquement)
+                  itemCount: sparkfunDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
                   itemBuilder: (BuildContext context, int index) {
-                    return ItemShow(index: index, sparkfunData : sparkfunData);
+                    return ItemShow(nullableIndex: index, sparkfunDataHistory : sparkfunDataHistory);
                   },
                 ),
               ),

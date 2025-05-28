@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/returnbutton.dart';
-import 'package:tristapp/widget/itemshow.dart';
 import 'package:tristapp/data/sensordata.dart';
+import 'package:tristapp/widget/itemshow.dart';
 
 class BinItemPage extends StatefulWidget {
   final int? index;
-  final Map<String, dynamic>? sparkfunData;
+  final List<Map<String, dynamic>?>? sparkfunDataHistory;
   
-  const BinItemPage({super.key, this.index, this.sparkfunData});
+  const BinItemPage({super.key, this.index, this.sparkfunDataHistory});
 
   @override
   State<BinItemPage> createState() => _BinItemPageState();
@@ -40,7 +40,10 @@ class _BinItemPageState extends State<BinItemPage> {
               Expanded(
                 child: Column(
                   children: [
-                    ItemShow(index: widget.index, sparkfunData : widget.sparkfunData), // BUG Renvoie sur la même page indéfiniment, utiliser une autre solution d'affichage !
+                    AbsorbPointer( // Disables the itemshow widget
+                      absorbing: true,
+                      child: ItemShow(nullableIndex: widget.index, sparkfunDataHistory: widget.sparkfunDataHistory),
+                    ),
                     Text("Latitude : ${gpsData?['record']['lat']}"),
                     Text("Longitude : ${gpsData?['record']['long']}")
                   ],
