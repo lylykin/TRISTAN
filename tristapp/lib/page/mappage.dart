@@ -1,10 +1,9 @@
 // import 'dart:developer'; // permet d'utiliser la fonction log pour le debug
 import 'package:flutter/material.dart';
-import 'package:tristapp/widget/mappininfo.dart';
+import 'package:tristapp/widget/mapdisplay.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:tristapp/data/sensordata.dart';
-import 'package:tristapp/page/binpage.dart';
+import 'package:tristapp/widget/mappinoverlay.dart';
 
 class MapPage extends StatefulWidget {
   final List
@@ -23,9 +22,10 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     final stationList = widget.stationList;
+    
     List<Marker> markersList = [];
-
-    for (
+    
+    for ( // Création d'un widget marker pour chaque instance de la liste en entrée de mappage (avec lien overlay)
       int stationIndex = 0;
       stationIndex < stationList.length;
       stationIndex++
@@ -34,7 +34,6 @@ class _MapPageState extends State<MapPage> {
       dynamic long = stationList[stationIndex].long;
       markersList.add(
         Marker(
-          // Création d'un widget marker pour chaque instance de la liste en entrée de mappage
           width: 30,
           height: 30,
           point: LatLng(lat, long),
@@ -64,75 +63,27 @@ class _MapPageState extends State<MapPage> {
     return OverlayPortal(
       controller: pinOverlayController,
       overlayChildBuilder: (context) {
-        if (selectedPinIndex == null) return SizedBox.shrink();
-        final station =
-            stationList[selectedPinIndex!]; // Considéré non null car test renvoyant un overlay vide si aucun pin séléctionné
-        return Positioned(
-          top: 50,
-          left: 150,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  // Besoin de changer les couleurs du texte !
-                  Text(
-                    station.stationName.toString(),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Latitude : ${station.lat}\nLongitude : ${station.long}",
-                  ),
-                  SizedBox(height: 10),
-                  FilledButton(
-                    onPressed: () {
-                      fetchGpsData(); // Mets l'historique à jour automatiquement
-                      fetchSparkfunData(); // Mets l'historique à jour automatiquement
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BinPage()),
-                      );
-                    },
-                    child: Text("Accéder à la borne"),
-                  ),
-                ],
-              ),
-            ),
-          ),
+        if (selectedPinIndex == null) return SizedBox.shrink(); // Cas aucun widget séléctionné
+        return MapPinOverlay(
+          station: stationList[selectedPinIndex!] // Considéré non null car test renvoyant un overlay vide si aucun pin séléctionné
         );
       },
-      child: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          initialCenter: LatLng(
-            45.75762368042102,
-            4.848624249247964,
-          ), // Centre la map sur Lyon
-          minZoom: 2,
-          interactionOptions: const InteractionOptions(pinchZoomThreshold: 0.2),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName:
-                'com.example.app', // or dev.fleaflet.flutter_map.example maybe ?
-          ),
-          MarkerLayer(markers: markersList),
-        ],
-      ),
+      child: MapDisplay(mapController: mapController, markersList: markersList)
     );
   }
 }
 
-double doubleConvert(value) {
+double doubleConvert(dynamic value) {
   // function used to convert
-  var type = value.runtimeTime;
+  var type = value.runtimeType;
   if (type != double) {
-    value.toInt();
+    return value.toDouble();
   }
   return (value);
 }
+
+//DEBUG
+//Future<void> main() async {
+//  int val = 4;
+//  print(doubleConvert(val));
+//}
