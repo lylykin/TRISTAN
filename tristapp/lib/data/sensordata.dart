@@ -24,9 +24,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final PocketBase pb = PocketBase('http://127.0.0.1:8090');
 final ValueNotifier<Map<String, dynamic>?> sparkfunDataNotifier = ValueNotifier(null);
-final ValueNotifier<Map<String, dynamic>?> gpsDataNotifier = ValueNotifier(null); // Valeurs temps réel communiquées avec l'app
+final ValueNotifier<Map<String, dynamic>?> itemsDataNotifier = ValueNotifier(null); // Valeurs temps réel communiquées avec l'app
 final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier = ValueNotifier([]);
-final ValueNotifier<List<Map<String, dynamic>?>> gpsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
+final ValueNotifier<List<Map<String, dynamic>?>> itemsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
 
 // (Optionally) authenticate
 Future<void> authenticateAdmin() async {
@@ -58,15 +58,15 @@ void subscribeToSparkfun() async {
 }
 
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
-void subscribeToGps() async {
+void subscribeToObjet() async {
   try {
     await authenticateAdmin();
-    print("Authenticated, subscribing to gps...");
-    pb.collection('gps').subscribe('*', (e) {
-      print("Event received from gps!");
+    print("Authenticated, subscribing to objet...");
+    pb.collection('objet').subscribe('*', (e) {
+      print("Event received from objet!");
       Map<String, dynamic>? record = e.toJson(); // TODO Si action est create, ajouter une ligne à l'affichage des objets scannés
       print(record);
-      gpsDataNotifier.value = record;
+      itemsDataNotifier.value = record;
       // MODIFY AS WISHED TO COLLECT THE DATAS
     },);
     print("Subscription done");
@@ -94,11 +94,11 @@ void fetchSparkfunData() async {
   }
 }
 
-void fetchGpsData() async {
+void fetchItemsData() async {
   try {
     await authenticateAdmin();
-    print("Authenticated, fetching from gps...");
-    final resultList = await pb.collection('gps').getFullList( // Récupère la liste complète
+    print("Authenticated, fetching from objet...");
+    final resultList = await pb.collection('objet').getFullList( // Récupère la liste complète
       sort: '-updated',
     );
     List<Map<String, dynamic>?> recordsList = [];
@@ -106,8 +106,8 @@ void fetchGpsData() async {
       recordsList.add(record.toJson());
     }
     print(recordsList);
-    gpsHistoryNotifier.value = recordsList;
-    print("Fetch done for gps");
+    itemsHistoryNotifier.value = recordsList;
+    print("Fetch done for objet");
   } catch (e) {
     print('Error while fetching full list from PocketBase : $e');
   }

@@ -32,11 +32,11 @@ class MapPinOverlay extends StatelessWidget {
                   SizedBox(height: 10),
                   FilledButton(
                     onPressed: () {
-                      fetchGpsData(); // Mets l'historique à jour automatiquement
+                      fetchItemsData(); // Mets l'historique à jour automatiquement
                       fetchSparkfunData(); // Mets l'historique à jour automatiquement
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => BinPage()),
+                        MaterialPageRoute(builder: (context) => BinPage(idBorne : station.stationName)),
                       );
                     },
                     child: Text("Accéder à la borne"),

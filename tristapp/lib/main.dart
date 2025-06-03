@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 // import 'package:flutter/rendering.dart';
 import 'package:tristapp/page/binselectpage.dart';
@@ -5,12 +7,13 @@ import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tristapp/data/sensordata.dart';
+import 'package:tristapp/page/datapage.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
   runApp(const MainApp());
   subscribeToSparkfun();
-  subscribeToGps();
+  subscribeToObjet();
 }
 
 class MainApp extends StatelessWidget {
@@ -48,15 +51,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var index = 0;
-  List<Widget> pagelist = [
-    UserPage(),
-    BinSelectPage(),
-    MapPage(stationList: [
-      (lat: 45.780722, long: 4.873583, stationName : "Tristan"), (lat: 46.0, long: 5.0, stationName : "DEBUG")
-      ],
-    ),
+  List<dynamic> stationList = [
+    (lat: 45.780722, long: 4.873583, stationName: "Tristan1"),
+    (lat: 46.0, long: 5.0, stationName: "Tristan2")
   ];
+  var index = 0;
+  late List<Widget> pagelist;
+
+  @override
+  void initState() {
+    super.initState();
+    pagelist = [
+      UserPage(),
+      BinSelectPage(stationList: stationList),
+      DataPage(),
+      MapPage(stationList: stationList),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +84,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.delete),
-                    label: Text("ta mère le setting"),
+                    label: Text("ta mère la poubelle"),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.data_usage),
+                    label: Text("ta mère les datas"),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.map),

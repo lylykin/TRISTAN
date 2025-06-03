@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/usercard.dart';
+import 'package:tristapp/widget/dynamiclastmesure.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -14,6 +15,20 @@ class UserPage extends StatelessWidget {
         UserCard(refText: "Nom d'utilisafeur : $userName"),
         UserCard(refText: "identifiant : $userId"),
         UserCard(refText: "Score : $score"),
+        SizedBox(height: 15,),
+        RichText(
+          text: TextSpan(
+          style: DefaultTextStyle.of(context).style, // hérite du style global
+          children: [TextSpan(
+            text:"Dernière mesure effectuée",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              backgroundColor: Theme.of(context).colorScheme.surface
+              ),
+            ),]
+        )),
+        DynamicLastMesure(),
       ],
     );
   }

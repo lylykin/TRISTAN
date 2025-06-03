@@ -17,7 +17,7 @@ class _BinItemPageState extends State<BinItemPage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Map<String, dynamic>?>(
-      valueListenable: gpsDataNotifier,
+      valueListenable: itemsDataNotifier,
       builder: (context, gpsData, child) {
         return Scaffold(
           appBar: AppBar(

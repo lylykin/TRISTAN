@@ -3,7 +3,8 @@ import 'package:tristapp/page/binpage.dart';
 import 'package:tristapp/data/sensordata.dart';
 
 class BinCard extends StatelessWidget {
-  const BinCard({super.key});
+  final String? name;
+  const BinCard({super.key, this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +34,11 @@ class BinCard extends StatelessWidget {
                 SizedBox(height: 6,),
                 FilledButton(
                   onPressed: () {
-                    fetchGpsData(); // Mets l'historique à jour automatiquement
+                    fetchItemsData(); // Mets l'historique à jour automatiquement
                     fetchSparkfunData(); // Mets l'historique à jour automatiquement
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BinPage()),
+                      MaterialPageRoute(builder: (context) => BinPage(idBorne: name)),
                     );
                   },
                   child: Text("Sélectionner la borne"),

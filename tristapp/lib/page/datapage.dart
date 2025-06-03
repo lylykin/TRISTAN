@@ -5,25 +5,17 @@ import 'package:tristapp/data/sensordata.dart';
 
 // Liaison dynamique à implémenter (sur les widgets child également)
 
-class BinPage extends StatelessWidget {
-  final String? idBorne;
-
-  const BinPage({super.key, this.idBorne});
+class DataPage extends StatelessWidget {
+  const DataPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<List<Map<String, dynamic>?>>(
       valueListenable: sparkfunHistoryNotifier,
       builder: (context, sparkfunDataHistory, child) {
-        List<Map<String, dynamic>> sparkfunNameStationDataHistory = [];
-          for (Map<String, dynamic>? record in sparkfunDataHistory) {
-            if (record != null && record['borne'] == idBorne) {
-              sparkfunNameStationDataHistory.add(record);
-            }
-          }
         return Scaffold(
           appBar: AppBar(
-            title: Text("Poubelle $idBorne"),
+            title: Text("Données mesurées"),
             centerTitle: true,
             foregroundColor: Theme.of(context).colorScheme.primary,
             elevation: 10,
@@ -41,9 +33,9 @@ class BinPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: sparkfunNameStationDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
+                  itemCount: sparkfunDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
                   itemBuilder: (BuildContext context, int index) {
-                    return ItemShow(nullableIndex: index, sparkfunDataHistory : sparkfunNameStationDataHistory);
+                    return ItemShow(nullableIndex: index, sparkfunDataHistory : sparkfunDataHistory);
                   },
                 ),
               ),
