@@ -8,6 +8,7 @@ import 'package:tristapp/page/userpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/page/datapage.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
@@ -27,7 +28,8 @@ class MainApp extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/2fix_green_background.png'),
+              image: Svg('assets/bgtrue.svg'),
+              // image: SvgPicture.asset(assetName : 'bgtrue.svg'),
               fit: BoxFit.cover,
             ),
           ),
@@ -53,7 +55,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<dynamic> stationList = [
     (lat: 45.780722, long: 4.873583, stationName: "Tristan1"),
-    (lat: 46.0, long: 5.0, stationName: "Tristan2")
+    (lat: 46.0, long: 5.0, stationName: "Tristan2"),
   ];
   var index = 0;
   late List<Widget> pagelist;

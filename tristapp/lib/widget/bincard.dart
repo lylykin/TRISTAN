@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/page/binpage.dart';
 import 'package:tristapp/data/sensordata.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class BinCard extends StatelessWidget {
   final String? name;
@@ -21,29 +22,34 @@ class BinCard extends StatelessWidget {
           children: [
             Column(
               children: [
-                Container( // permet d'afficher l'image dans un widget dont la déco est personalisable
+                Container(
+                  // permet d'afficher l'image dans un widget dont la déco est personalisable
                   height: 300,
                   width: 300,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                      image: AssetImage('assets/trash_img.jpg'), //evidemment cette image est provisoire
+                      image: Svg(
+                        'assets/box.svg',
+                      ), //evidemment cette image est provisoire
                     ),
                   ),
                 ),
-                SizedBox(height: 6,),
+                SizedBox(height: 6),
                 FilledButton(
                   onPressed: () {
                     fetchItemsData(); // Mets l'historique à jour automatiquement
                     fetchSparkfunData(); // Mets l'historique à jour automatiquement
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => BinPage(idBorne: name)),
+                      MaterialPageRoute(
+                        builder: (context) => BinPage(idBorne: name),
+                      ),
                     );
                   },
                   child: Text("Sélectionner la borne"),
                 ),
-                SizedBox(height: 6,),
+                SizedBox(height: 6),
               ],
             ),
           ],
