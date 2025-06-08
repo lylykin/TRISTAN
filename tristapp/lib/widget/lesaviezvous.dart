@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class LeSaviezVous extends StatelessWidget {
   final String? materialId;
@@ -60,7 +61,7 @@ class LeSaviezVous extends StatelessWidget {
         style: DefaultTextStyle.of(context).style, // hérite du style global
         children: [
           TextSpan(
-            text: facts[materialId]?[0],
+            text: facts[materialId]?[Random().nextInt(facts[materialId]!.length)],
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,

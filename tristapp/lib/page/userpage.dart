@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/usercard.dart';
 import 'package:tristapp/widget/dynamiclastmesure.dart';
+import 'package:tristapp/widget/objectnameinput.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
@@ -29,6 +30,8 @@ class UserPage extends StatelessWidget {
             ),]
         )),
         DynamicLastMesure(),
+        ObjectNameInput(),
+        //ElevatedButton(onPressed: newObject, child: Text("L'objet là"))
       ],
     );
   }

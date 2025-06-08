@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:tristapp/page/binselectpage.dart';
 import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
@@ -80,19 +77,19 @@ class _HomePageState extends State<HomePage> {
                 destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.home),
-                    label: Text("ta mère la homepage"),
+                    label: Text("Home"),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.delete),
-                    label: Text("ta mère la poubelle"),
+                    label: Text("Bornes"),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.data_usage),
-                    label: Text("ta mère les datas"),
+                    label: Text("Données"),
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.map),
-                    label: Text("ta mère la map"),
+                    label: Text("Carte"),
                   ),
                 ],
                 selectedIndex: index,
