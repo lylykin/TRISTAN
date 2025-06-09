@@ -50,11 +50,8 @@ Future<void> authenticateAdmin() async {
   String? adminIdSecretNullable = dotenv.env['SUPER_ID'];
   String? adminPassSecretNullable = dotenv.env['SUPER_PASS'];
   String adminIdSecret = adminIdSecretNullable!;
-  String adminPassSecret =
-      adminPassSecretNullable!; // might crash if missing env file
-  final authData = await pb
-      .collection('users')
-      .authWithPassword(adminIdSecret, adminPassSecret);
+  String adminPassSecret = adminPassSecretNullable!; // might crash if missing env file
+  final authData = await pb.collection('users').authWithPassword(adminIdSecret, adminPassSecret);
   // User line requiered for authentification in the users collection in pocketbase (collect the id and mdp of the env file)
   currentAuthData.value = authData;
 }
@@ -71,9 +68,7 @@ void subscribeToSparkfun() async {
       sparkfunDataNotifier.value = record;
 
       if (record["action"] == "create") {
-        print(
-          "Adding custom object name...",
-        ); // Ajout d'un nouvel objet si une nouvelle mesure est effectuée
+        print("Adding custom object name..."); // Ajout d'un nouvel objet si une nouvelle mesure est effectuée
         newObject(e.record);
       }
       ;
@@ -108,10 +103,10 @@ void fetchSparkfunData() async {
   try {
     print("Authenticated, fetching from sparkfun...");
     final resultList = await pb
-        .collection('sparkfun')
-        .getFullList(
-          sort: '-updated', // Liste triée par ordre de mise à jour
-        );
+      .collection('sparkfun')
+      .getFullList(
+        sort: '-updated', // Liste triée par ordre de mise à jour
+      );
     List<Map<String, dynamic>?> recordsList = [];
     for (RecordModel record in resultList) {
       // Convertis les élements RecordModel de la liste en dictionnaires (Map)
@@ -129,11 +124,11 @@ void fetchItemsData() async {
   try {
     print("Authenticated, fetching from objet...");
     final resultList = await pb
-        .collection('objet')
-        .getFullList(
-          // Récupère la liste complète
-          sort: '-updated',
-        );
+      .collection('objet')
+      .getFullList(
+        // Récupère la liste complète
+        sort: '-updated',
+      );
     List<Map<String, dynamic>?> recordsList = [];
     for (RecordModel record in resultList) {
       // Convertis les élements RecordModel de la liste en dictionnaires (Map)
@@ -191,8 +186,8 @@ void newObject(lastMesure) async {
           'nom_objet': objectNameInput,
         };
         final createdRecord = await pb
-            .collection("objet")
-            .create(body: objetInfo);
+          .collection("objet")
+          .create(body: objetInfo);
         print(objetInfo);
         objetId = createdRecord.id;
         print("Objet added in db");
@@ -201,12 +196,10 @@ void newObject(lastMesure) async {
       // Récupère l'id de la dernière mesure insérée et lui ajoute l'objet inséré par l'utilisateur
       Map<String, dynamic> lastMesureRecord =
           lastMesure.toJson(); // On récupère l'élement sous forme de dico
-      pb
-          .collection("sparkfun")
-          .update(
-            lastMesureRecord['id'],
-            body: <String, dynamic>{'objet': objetId},
-          );
+      pb.collection("sparkfun").update(
+        lastMesureRecord['id'],
+        body: <String, dynamic>{'objet': objetId},
+      );
     }
   } catch (e) {
     print('Error while updating objet using user input : $e');
@@ -217,18 +210,13 @@ void newObject(lastMesure) async {
 Future<String> askUserObjectName() async {
   if (_currentInputCompleter != null && !_currentInputCompleter!.isCompleted) {
     // On a déjà eu un input et il n'est pas encore compélté
-    _currentInputCompleter!.complete(
-      "",
-    ); // On renvoie "" pour le nom de cet objet
+    _currentInputCompleter!.complete(""); // On renvoie "" pour le nom de cet objet
     displayInputObjectNotifier.value = false; // On enlève l'affichage du widget
   }
 
   displayInputObjectNotifier.value = true; // Affichage du widget
 
-  final completer =
-      Completer<
-        String
-      >(); // Permet de créer et compléter manuellement un Future, valeur ou erreur disponible après action de l'user
+  final completer = Completer<String>(); // Permet de créer et compléter manuellement un Future, valeur ou erreur disponible après action de l'user
   _currentInputCompleter = completer; // Nouvelle entrée en attente
 
   late VoidCallback
@@ -253,8 +241,6 @@ Future<String> askUserObjectName() async {
     listener,
   ); // Début de l'écoute de l'action de l'user
 
-  final input =
-      await completer
-          .future; // Définit le renvoi à l'entrée de l'user récupérée par le future complété
+  final input = await completer.future; // Définit le renvoi à l'entrée de l'user récupérée par le future complété
   return input; // Peut être "" mais pas null
 }
