@@ -33,25 +33,26 @@ final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier = Value
 final ValueNotifier<List<Map<String, dynamic>?>> itemsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
 final ValueNotifier<bool> displayInputObjectNotifier = ValueNotifier(false);
 final ValueNotifier<String> inputObjectNotifier = ValueNotifier("");
+final ValueNotifier<bool> subscribedNotifier = ValueNotifier(true);
+final ValueNotifier<RecordAuth?> currentAuthData = ValueNotifier(null); // Peut être remplacé par authStore de pocketbase, se renseigner !!!
 
 Completer<String>? _currentInputCompleter; // Collecte les entrées de l'utilisateur
 
-// (Optionally) authenticate
-Future<RecordAuth> authenticateAdmin() async {
+// (Optionally) authenticate with env file
+Future<void> authenticateAdmin() async {
   String? adminIdSecretNullable = dotenv.env['SUPER_ID'];
   String? adminPassSecretNullable = dotenv.env['SUPER_PASS'];
   String adminIdSecret = adminIdSecretNullable!;
   String adminPassSecret = adminPassSecretNullable!; // might crash if missing env file
   final authData = await  pb.collection('users').authWithPassword(adminIdSecret, adminPassSecret);
   // User line requiered for authentification in the users collection in pocketbase (collect the id and mdp of the env file)
-  return authData;
+  currentAuthData.value = authData;
 }
 
 // Subscribe to changes in any sparkfun record
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
 void subscribeToSparkfun() async {
   try {
-    await authenticateAdmin();
     print("Authenticated, subscribing to sparkfun...");
     pb.collection('sparkfun').subscribe('*', (e) {
       print("Event received from sparkfun!");
@@ -67,13 +68,13 @@ void subscribeToSparkfun() async {
     print("Subscription done");
   } catch (e) {
     print('Error while subscribing to PocketBase : $e');
+    subscribedNotifier.value = false;
   }
 }
 
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
 void subscribeToObjet() async {
   try {
-    await authenticateAdmin();
     print("Authenticated, subscribing to objet...");
     pb.collection('objet').subscribe('*', (e) {
       print("Event received from objet!");
@@ -85,12 +86,12 @@ void subscribeToObjet() async {
     print("Subscription done");
   } catch (e) {
     print('Error while subscribing to PocketBase : $e');
+    subscribedNotifier.value = false;
   }
 }
 
 void fetchSparkfunData() async {
   try {
-    //await authenticateAdmin();
     print("Authenticated, fetching from sparkfun...");
     final resultList = await pb.collection('sparkfun').getFullList(
       sort: '-updated', // Liste triée par ordre de mise à jour
@@ -109,7 +110,6 @@ void fetchSparkfunData() async {
 
 void fetchItemsData() async {
   try {
-    //await authenticateAdmin();
     print("Authenticated, fetching from objet...");
     final resultList = await pb.collection('objet').getFullList( // Récupère la liste complète
       sort: '-updated',
@@ -131,9 +131,8 @@ void newObject(lastMesure) async {
     //    Se termine si l'objet existe déjà et sinon crée la ligne en récupérant le matériau et l'utilisateur en paramètre
     //    Récupère l'id de l'objet ajouté/entré
   try {
-    RecordAuth authData = await authenticateAdmin();
-    String? userId = authData.record.id;
-    //await authenticateAdmin();
+    RecordAuth? authData = currentAuthData.value; // FIND WAY TO COLLECT USER ID
+    String? userId = authData!.record.id; // On suppose que l'utilisateur doit être connecté sous peine d'erreur
     print("Authenticated, collecting user input for objet...");
     String objectNameInput = await askUserObjectName();
     print("User input for objet collected : $objectNameInput");

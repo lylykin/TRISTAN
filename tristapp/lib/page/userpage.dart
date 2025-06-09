@@ -21,14 +21,15 @@ class UserPage extends StatelessWidget {
           text: TextSpan(
           style: DefaultTextStyle.of(context).style, // hérite du style global
           children: [TextSpan(
-            text:"Dernière mesure effectuée",
+            text:"Dernière mesure effectuée :",
             style: TextStyle(
+              color: Theme.of(context).colorScheme.surfaceBright,
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              backgroundColor: Theme.of(context).colorScheme.surface
               ),
             ),]
         )),
+        SizedBox(height: 10,),
         DynamicLastMesure(),
         ObjectNameInput(),
         //ElevatedButton(onPressed: newObject, child: Text("L'objet là"))

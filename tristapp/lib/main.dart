@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/page/binselectpage.dart';
+import 'package:tristapp/page/loginpage.dart';
 import 'package:tristapp/page/mappage.dart';
 import 'package:tristapp/page/userpage.dart';
+import 'package:tristapp/page/settingpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/page/datapage.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:tristapp/widget/notificationbubble.dart';
+
+ValueNotifier<bool> isLoggedInNotifier = ValueNotifier(pb.authStore.isValid); // Pocketbase informe si l'utilisateur est connecté (false/true)
 
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
   runApp(const MainApp());
-  subscribeToSparkfun();
-  subscribeToObjet();
 }
 
 class MainApp extends StatelessWidget {
@@ -19,25 +22,32 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "TRISTAN",
-      home: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: Svg('assets/bgtrue.svg'),
-              // image: SvgPicture.asset(assetName : 'bgtrue.svg'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: HomePage(),
-        ),
-      ),
 
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        brightness: Brightness.light, // erreur si on met dark
-      ),
+    return ValueListenableBuilder(
+      valueListenable: isLoggedInNotifier,
+      builder: (context, isLoggedIn, child) {
+        return MaterialApp(
+          title: "TRISTAN",
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+            brightness: Brightness.light, // erreur si on met dark
+          ),
+          home: Scaffold(
+            body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: Svg('assets/bgtrue.svg'),
+                  // image: SvgPicture.asset(assetName : 'bgtrue.svg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: isLoggedIn
+                ? HomePage()
+                : LoginPage()
+            ),
+          )
+        );
+      }
     );
   }
 }
@@ -65,6 +75,7 @@ class _HomePageState extends State<HomePage> {
       BinSelectPage(stationList: stationList),
       DataPage(),
       MapPage(stationList: stationList),
+      SettingPage(),
     ];
   }
 
@@ -78,7 +89,17 @@ class _HomePageState extends State<HomePage> {
               child: NavigationRail(
                 destinations: [
                   NavigationRailDestination(
-                    icon: Icon(Icons.home),
+                    icon: Stack( // Permet l'affichage conditionnel d'une bulle de notification
+                      children: <Widget>[
+                        Icon(Icons.home),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: displayInputObjectNotifier,
+                          builder: (context, displayInputObjectNotifier, child) {
+                            return NotificationBubble(display: displayInputObjectNotifier);
+                          },
+                        ),
+                      ],
+                    ),
                     label: Text("Home"),
                   ),
                   NavigationRailDestination(
@@ -92,6 +113,10 @@ class _HomePageState extends State<HomePage> {
                   NavigationRailDestination(
                     icon: Icon(Icons.map),
                     label: Text("Carte"),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.settings),
+                    label: Text("Paramètres"),
                   ),
                 ],
                 selectedIndex: index,
