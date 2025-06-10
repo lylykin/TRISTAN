@@ -11,8 +11,8 @@ class DataPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<List<Map<String, dynamic>?>>(
-      valueListenable: sparkfunHistoryNotifier,
-      builder: (context, sparkfunDataHistory, child) {
+      valueListenable: itemsHistoryNotifier,
+      builder: (context, itemsDataHistory, child) {
         return Scaffold(
           appBar: AppBar(
             title: Text("Données mesurées"),
@@ -33,9 +33,9 @@ class DataPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: sparkfunDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
+                  itemCount: itemsDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
                   itemBuilder: (BuildContext context, int index) {
-                    return ItemShow(nullableIndex: index, sparkfunDataHistory : sparkfunDataHistory);
+                    return ItemShow(nullableIndex: index, itemsDataHistory : itemsDataHistory);
                   },
                 ),
               ),

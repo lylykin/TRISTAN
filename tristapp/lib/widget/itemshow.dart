@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 
 class ItemShow extends StatefulWidget {
   final int? nullableIndex;
-  final List<Map<String, dynamic>?>? sparkfunDataHistory;
+  final List<Map<String, dynamic>?>? itemsDataHistory;
 
-  const ItemShow({super.key, this.nullableIndex, this.sparkfunDataHistory});
+  const ItemShow({super.key, this.nullableIndex, this.itemsDataHistory});
 
   @override
   State<ItemShow> createState() => _ItemShowState();
@@ -16,14 +16,23 @@ class _ItemShowState extends State<ItemShow> {
   @override
   Widget build(BuildContext context) {
     final int index = widget.nullableIndex ?? 0; // Test if null, gives 0 if it is
-    final dateItemDisplay = widget.sparkfunDataHistory?[index]?['updated'] != null // Date à afficher selon la présence de la donnée ou si null
-            ? "${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.sparkfunDataHistory?[index]?['updated']))} UTC +0" // parse converit la chaine, dateformat affiche avec un format lisible
+    final dateItemDisplay = widget.itemsDataHistory?[index]?['updated'] != null // Date à afficher selon la présence de la donnée ou si null
+            ? "${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.itemsDataHistory?[index]?['updated']))} UTC +0" // parse converit la chaine, dateformat affiche avec un format lisible
             : "Date inconnue";
-    final displayMateriau = widget.sparkfunDataHistory?[index]?['material'] != null
-            ? "Matériau "
+    final displayObjectFormat = widget.itemsDataHistory?[index]?['nom_objet'] != null
+            ? "Objet "
             : "";
-    final materialNameDisplay = widget.sparkfunDataHistory?[index]?['material'] ?? "Erreur : Objet null"; // Test if null, error display if it is
-    final recyclable = widget.sparkfunDataHistory?[index]?['recyclable'] ?? "Pas d'information sur la recyclabilité";
+    final objectNameDisplay = widget.itemsDataHistory?[index]?['nom_objet'] ?? "Erreur : Objet null"; // Test if null, error display if it is
+    String recyclable;
+    if (widget.itemsDataHistory?[index]?['recyclability'] == null) {
+      recyclable = "Pas d'information sur la recyclabilité";
+    } else {
+      if (widget.itemsDataHistory?[index]?['recyclability']) {
+        recyclable = "Recyclable";
+      } else {
+        recyclable = "Non recyclable";
+      }
+    }
 
     return Card(
       child: ListTile(
@@ -31,7 +40,6 @@ class _ItemShowState extends State<ItemShow> {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style, // hérite du style global
             children: [
-              TextSpan(text:"Objet affiché n°$index - "),
               TextSpan(
                 text: dateItemDisplay,
                 style: const TextStyle(fontStyle: FontStyle.italic)
@@ -43,9 +51,9 @@ class _ItemShowState extends State<ItemShow> {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style, // hérite du style global
             children: [
-              TextSpan(text: displayMateriau),
+              TextSpan(text: displayObjectFormat),
               TextSpan(
-                text: materialNameDisplay,
+                text: objectNameDisplay,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ]
@@ -69,7 +77,7 @@ class _ItemShowState extends State<ItemShow> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BinItemPage(index : widget.nullableIndex, sparkfunDataHistory: widget.sparkfunDataHistory)),
+            MaterialPageRoute(builder: (context) => BinItemPage(index : widget.nullableIndex, itemsDataHistory: widget.itemsDataHistory)),
           );
         },
       ),

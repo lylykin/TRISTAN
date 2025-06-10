@@ -33,7 +33,6 @@ class MapPinOverlay extends StatelessWidget {
                   FilledButton(
                     onPressed: () {
                       fetchItemsData(); // Mets l'historique à jour automatiquement
-                      fetchSparkfunData(); // Mets l'historique à jour automatiquement
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => BinPage(idBorne : station.stationName)),

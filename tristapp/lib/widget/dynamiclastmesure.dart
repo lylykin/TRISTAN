@@ -14,12 +14,12 @@ class _DynamicLastMesureState extends State<DynamicLastMesure> {
   Widget build(BuildContext context) {
     
     return ValueListenableBuilder<List<Map<String, dynamic>?>>(
-      valueListenable: sparkfunHistoryNotifier,
+      valueListenable: itemsHistoryNotifier,
       builder: (context, sparkfunHistory, child) {
         return ValueListenableBuilder<Map<String, dynamic>?>(
-          valueListenable: sparkfunDataNotifier,
-          builder: (context, sparkfunData, child) {
-            return ItemShow(nullableIndex: 0, sparkfunDataHistory : [sparkfunData]);
+          valueListenable: itemsDataNotifier,
+          builder: (context, itemsData, child) {
+            return Placeholder();//ItemShow(nullableIndex: 0, itemsDataHistory : [itemsData]);
             //if (sparkfunDataNotifier.value == null) {
             //  return ItemShow(nullableIndex: 0, sparkfunDataHistory : sparkfunHistory);
             //} else {

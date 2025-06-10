@@ -9,7 +9,6 @@ class ReloadButton extends StatelessWidget {
     return FilledButton(
       onPressed: () { // Mets à jour les données historiques récupérées sur PocketBase
         fetchItemsData();
-        fetchSparkfunData();
       },
       child: Icon(Icons.replay_outlined),
     );

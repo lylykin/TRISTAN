@@ -7,23 +7,27 @@ import 'package:tristapp/data/sensordata.dart';
 
 class BinPage extends StatelessWidget {
   final String? idBorne;
-
-  const BinPage({super.key, this.idBorne});
+  final String? nomBorne;
+  const BinPage({super.key, this.idBorne, this.nomBorne});
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<List<Map<String, dynamic>?>>(
-      valueListenable: sparkfunHistoryNotifier,
-      builder: (context, sparkfunDataHistory, child) {
-        List<Map<String, dynamic>> sparkfunNameStationDataHistory = [];
-          for (Map<String, dynamic>? record in sparkfunDataHistory) {
-            if (record != null && record['borne'] == idBorne) {
-              sparkfunNameStationDataHistory.add(record);
+      valueListenable: itemsHistoryNotifier,
+      builder: (context, itemsDataHistory, child) {
+        List<Map<String, dynamic>> itemsNameStationDataHistory = [];
+          for (Map<String, dynamic>? record in itemsDataHistory) {
+            if ( // Récupère toutes les données non null, provenant de la borne séléctionnée, étant de la phase 2 (objet!=null) (déjà traitée pour l'utilisateur courant)
+              record != null && 
+              record['expand']['sparkfun_via_objet'][0]['borne'] == idBorne // [0] car normalement une seule mesure par objet donc pas besoin de parcourir la liste
+            ) { 
+              itemsNameStationDataHistory.add(record); // On ajoute les données objet liées à tous les objets de l'user pour la borne (contenant sparkfun dans le expand)
             }
-          }
+                
+            }
         return Scaffold(
           appBar: AppBar(
-            title: Text("Poubelle $idBorne"),
+            title: Text("Poubelle $nomBorne"),
             centerTitle: true,
             foregroundColor: Theme.of(context).colorScheme.primary,
             elevation: 10,
@@ -41,9 +45,9 @@ class BinPage extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                  itemCount: sparkfunNameStationDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
+                  itemCount: itemsNameStationDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
                   itemBuilder: (BuildContext context, int index) {
-                    return ItemShow(nullableIndex: index, sparkfunDataHistory : sparkfunNameStationDataHistory);
+                    return ItemShow(nullableIndex: index, itemsDataHistory : itemsNameStationDataHistory);
                   },
                 ),
               ),

@@ -16,16 +16,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     try {
-      currentAuthData.value = await pb.collection('users').authWithPassword(idController.text, passController.text);
+      await pb.collection('users').authWithPassword(idController.text, passController.text);
       setState(() => error = null); // Modifie l'état en avertissant le constructeur
       // L'utilisateur est connecté à partir d'ici
-      subscribeToSparkfun();
-      subscribeToObjet();
-      fetchSparkfunData();
-      isLoggedInNotifier.value = true;
+      if (pb.authStore.isValid) {
+        subscribeToObjet();
+        fetchItemsData();
+        isLoggedInNotifier.value = true;
+      }
     } catch (e) {
       setState(() => error = "Erreur de connexion : mot de passe ou identifiant incorrect");
-      print(e);
     }
   }
 
@@ -80,10 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                     ElevatedButton(
                     onPressed: () {
                       authenticateAdmin();
-                      subscribeToSparkfun();
-                      subscribeToObjet();
-                      fetchSparkfunData();
-                      isLoggedInNotifier.value = true;
                     },
                     child: const Text("Se connecter en utilisant le fichier env")
                     ),

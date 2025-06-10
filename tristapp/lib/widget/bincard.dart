@@ -4,8 +4,9 @@ import 'package:tristapp/data/sensordata.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class BinCard extends StatelessWidget {
+  final String? id;
   final String? name;
-  const BinCard({super.key, this.name});
+  const BinCard({super.key, this.id, this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +31,8 @@ class BinCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
                       image: Svg(
-                        'assets/box.svg',
-                      ), //evidemment cette image est provisoire
+                        'assets/box-$id.svg',
+                      ),
                     ),
                   ),
                 ),
@@ -39,11 +40,10 @@ class BinCard extends StatelessWidget {
                 FilledButton(
                   onPressed: () {
                     fetchItemsData(); // Mets l'historique à jour automatiquement
-                    fetchSparkfunData(); // Mets l'historique à jour automatiquement
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BinPage(idBorne: name),
+                        builder: (context) => BinPage(idBorne: id, nomBorne: name),
                       ),
                     );
                   },

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/returnbutton.dart';
-import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/widget/itemshow.dart';
-import 'package:tristapp/widget/lesaviezvous.dart';
+import 'package:tristapp/widget/tristancard.dart';
 
 class BinItemPage extends StatefulWidget {
   final int? index;
-  final List<Map<String, dynamic>?>? sparkfunDataHistory;
+  final List<Map<String, dynamic>?>? itemsDataHistory;
 
-  const BinItemPage({super.key, this.index, this.sparkfunDataHistory});
+  const BinItemPage({super.key, this.index, this.itemsDataHistory});
 
   @override
   State<BinItemPage> createState() => _BinItemPageState();
@@ -19,50 +18,68 @@ class _BinItemPageState extends State<BinItemPage> {
   Widget build(BuildContext context) {
     final int index = widget.index ?? 0;
     final materialId =
-        widget.sparkfunDataHistory?[index]?['material'] ??
+        widget.itemsDataHistory?[index]?['nom_objet'] ??
         "Erreur : Objet null";
-    return ValueListenableBuilder<Map<String, dynamic>?>(
-      valueListenable: itemsDataNotifier,
-      builder: (context, gpsData, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Détails de l'objet"),
-            centerTitle: true,
-            foregroundColor: Theme.of(context).colorScheme.primary,
-            elevation: 10,
-            scrolledUnderElevation: 50,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Returnbutton(),
-              ),
-            ],
+    final Map<String, dynamic> gps = widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'][0]['expand']['borne'];
+    String latDisplay = (gps['lat_actuel'] == null || gps['lat_actuel'] == "") ? "Aucune donnée" : gps['lat_actuel'];
+    String longDisplay = (gps['long_actuel'] == null || gps['long_actuel'] == "") ? "Aucune donnée" : gps['long_actuel'];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Détails de l'objet"),
+        centerTitle: true,
+        foregroundColor: Theme.of(context).colorScheme.primary,
+        elevation: 10,
+        scrolledUnderElevation: 50,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Returnbutton(),
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    AbsorbPointer(
-                      // Disables the itemshow widget
-                      absorbing: true,
-                      child: ItemShow(
-                        nullableIndex: widget.index,
-                        sparkfunDataHistory: widget.sparkfunDataHistory,
-                      ),
-                    ),
-                    Text("Latitude : ${gpsData?['record']['lat']}"),
-                    Text("Longitude : ${gpsData?['record']['long']}"),
-                    LeSaviezVous(materialId: materialId),
-                  ],
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                AbsorbPointer(
+                  // Disables the itemshow widget
+                  absorbing: true,
+                  child: ItemShow(
+                    nullableIndex: widget.index,
+                    itemsDataHistory: widget.itemsDataHistory,
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 15),
+                RichText(
+                  text: TextSpan(
+                    text: "Latitude : $latDisplay",
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary
+                    ),
+                  )
+                ), // Une seule mesure par objet donc [0] séléctionne l'unique valeur de la liste 'sparkfun_via_objet'
+                RichText(
+                  text: TextSpan(
+                    text: "Longitude : $longDisplay",
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary
+                    ),
+                  )
+                ),
+                TristanCard(materialId: materialId),
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

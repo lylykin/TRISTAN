@@ -10,9 +10,9 @@ class BinSelectPage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        BinCard(name: stationList?[0].stationName),
+        BinCard(id: stationList?[0].stationId, name: stationList?[0].stationName),
         SizedBox(width: 10,),
-        BinCard(name: stationList?[1].stationName),
+        BinCard(id: stationList?[1].stationId, name: stationList?[1].stationName),
       ],
     );
   }

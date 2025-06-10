@@ -61,8 +61,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<dynamic> stationList = [
-    (lat: 45.780722, long: 4.873583, stationName: "Tristan1"),
-    (lat: 46.0, long: 5.0, stationName: "Tristan2"),
+    (lat: 45.780722, long: 4.873583, stationId: "tristan1", stationName: "INSA Lyon"),
+    (lat: 46.0, long: 5.0, stationId: "tristan2", stationName: "Borne 2"),
   ];
   var index = 0;
   late List<Widget> pagelist;

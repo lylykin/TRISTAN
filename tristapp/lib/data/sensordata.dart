@@ -1,49 +1,20 @@
-//class SensorData {
-//  final List<int> sparkfunData;
-//  final List<double> gpsData;
-//  final bool recyclable;
-//
-//  SensorData(
-//    this.sparkfunData;
-//    this.gpsData;
-//    this.recyclable;
-//  );
-//}
-//
-//List data = [
-//  SensorData(
-//    [11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 14],
-//    [0.1, 0.2, 0.3],
-//    true,
-//  ),
-//]
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:tristapp/main.dart';
 
-final PocketBase pb = PocketBase('http://vps-2244fb93.vps.ovh.net');
-final ValueNotifier<Map<String, dynamic>?> sparkfunDataNotifier = ValueNotifier(
-  null,
-);
-final ValueNotifier<Map<String, dynamic>?> itemsDataNotifier = ValueNotifier(
-  null,
-); // Valeurs temps réel communiquées avec l'app
-final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier =
-    ValueNotifier([]);
-final ValueNotifier<List<Map<String, dynamic>?>>
-itemsHistoryNotifier = ValueNotifier(
-  [],
-); // Valeurs contenant l'ensemble des données des tables sous forme de liste
+final PocketBase pb = PocketBase('https://vps-2244fb93.vps.ovh.net'); // Interface : https://vps-2244fb93.vps.ovh.net/_/
+//final ValueNotifier<Map<String, dynamic>?> sparkfunDataNotifier = ValueNotifier(null);
+final ValueNotifier<Map<String, dynamic>?> itemsDataNotifier = ValueNotifier(null); // Valeurs temps réel communiquées avec l'app
+//final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier = ValueNotifier([]);
+final ValueNotifier<List<Map<String, dynamic>>> itemsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
 final ValueNotifier<bool> displayInputObjectNotifier = ValueNotifier(false);
 final ValueNotifier<String> inputObjectNotifier = ValueNotifier("");
 final ValueNotifier<bool> subscribedNotifier = ValueNotifier(true);
-final ValueNotifier<RecordAuth?> currentAuthData = ValueNotifier(null); // Peut être remplacé par authStore de pocketbase, se renseigner !!!
 
-Completer<String>?
-_currentInputCompleter; // Collecte les entrées de l'utilisateur
+Completer<String>? _currentInputCompleter; // Collecte les entrées de l'utilisateur
 
 // (Optionally) authenticate with env file
 Future<void> authenticateAdmin() async {
@@ -51,16 +22,21 @@ Future<void> authenticateAdmin() async {
   String? adminPassSecretNullable = dotenv.env['SUPER_PASS'];
   String adminIdSecret = adminIdSecretNullable!;
   String adminPassSecret = adminPassSecretNullable!; // might crash if missing env file
-  final authData = await pb.collection('users').authWithPassword(adminIdSecret, adminPassSecret);
+  await pb.collection('users').authWithPassword(adminIdSecret, adminPassSecret);
   // User line requiered for authentification in the users collection in pocketbase (collect the id and mdp of the env file)
-  currentAuthData.value = authData;
+  if (pb.authStore.isValid) {
+    subscribeToObjet();
+    fetchItemsData();
+    isLoggedInNotifier.value = true;
+  }
 }
 
 // Subscribe to changes in any sparkfun record
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
+/*
 void subscribeToSparkfun() async {
   try {
-    print("Authenticated, subscribing to sparkfun...");
+    print("Subscribing to sparkfun...");
     pb.collection('sparkfun').subscribe('*', (e) {
       print("Event received from sparkfun!");
       Map<String, dynamic>? record = e.toJson();
@@ -79,18 +55,18 @@ void subscribeToSparkfun() async {
     subscribedNotifier.value = false;
   }
 }
+*/
 
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
 void subscribeToObjet() async {
   try {
-    print("Authenticated, subscribing to objet...");
+    print("Subscribing to objet...");
     pb.collection('objet').subscribe('*', (e) {
       print("Event received from objet!");
       Map<String, dynamic>? record =
-          e.toJson(); // TODO Si action est create, ajouter une ligne à l'affichage des objets scannés
+          e.toJson();
       print(record);
       itemsDataNotifier.value = record;
-      // MODIFY AS WISHED TO COLLECT THE DATAS
     });
     print("Subscription done");
   } catch (e) {
@@ -99,42 +75,44 @@ void subscribeToObjet() async {
   }
 }
 
-void fetchSparkfunData() async {
-  try {
-    print("Authenticated, fetching from sparkfun...");
-    final resultList = await pb
-      .collection('sparkfun')
-      .getFullList(
-        sort: '-updated', // Liste triée par ordre de mise à jour
-      );
-    List<Map<String, dynamic>?> recordsList = [];
-    for (RecordModel record in resultList) {
-      // Convertis les élements RecordModel de la liste en dictionnaires (Map)
-      recordsList.add(record.toJson());
-    }
-    print(recordsList);
-    sparkfunHistoryNotifier.value = recordsList;
-    print("Fetch done for sparkfun");
-  } catch (e) {
-    print('Error while fetching full list from PocketBase : $e');
-  }
-}
+//void fetchSparkfunData() async {
+//  try {
+//    print("Authenticated, fetching from sparkfun...");
+//    final resultList = await pb
+//      .collection('sparkfun')
+//      .getFullList(
+//        sort: '-updated', // Liste triée par ordre de mise à jour
+//      );
+//    List<Map<String, dynamic>?> recordsList = [];
+//    for (RecordModel record in resultList) {
+//      // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+//      recordsList.add(record.toJson());
+//    }
+//    print(recordsList);
+//    sparkfunHistoryNotifier.value = recordsList;
+//    print("Fetch done for sparkfun");
+//  } catch (e) {
+//    print('Error while fetching full list from PocketBase : $e');
+//  }
+//}
 
 void fetchItemsData() async {
   try {
-    print("Authenticated, fetching from objet...");
+    print("Fetching from objet...");
+    String? userId = pb.authStore.record!.id; // On suppose que l'utilisateur doit être connecté sous peine d'erreur
     final resultList = await pb
       .collection('objet')
-      .getFullList(
-        // Récupère la liste complète
+      .getFullList( // On prend les objets phase 2 (donc pas d'objet null) et on veut que les objets de l'user (avec le via on connecte les deux tables)
+        filter: 'user = "$userId"',
+        expand: 'sparkfun_via_objet.borne',
         sort: '-updated',
       );
-    List<Map<String, dynamic>?> recordsList = [];
+    List<Map<String, dynamic>> recordsList = [];
     for (RecordModel record in resultList) {
-      // Convertis les élements RecordModel de la liste en dictionnaires (Map)
-      recordsList.add(record.toJson());
+      Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+      recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      recordsList.add(recordMap);
     }
-    print(recordsList);
     itemsHistoryNotifier.value = recordsList;
     print("Fetch done for objet");
   } catch (e) {
@@ -147,8 +125,7 @@ void newObject(lastMesure) async {
   //    Se termine si l'objet existe déjà et sinon crée la ligne en récupérant le matériau et l'utilisateur en paramètre
   //    Récupère l'id de l'objet ajouté/entré
   try {
-    RecordAuth? authData = currentAuthData.value; // FIND WAY TO COLLECT USER ID
-    String? userId = authData!.record.id; // On suppose que l'utilisateur doit être connecté sous peine d'erreur
+    String? userId = pb.authStore.record!.id; // On suppose que l'utilisateur doit être connecté sous peine d'erreur
     print("Authenticated, collecting user input for objet...");
     String objectNameInput = await askUserObjectName();
     print("User input for objet collected : $objectNameInput");
@@ -243,4 +220,21 @@ Future<String> askUserObjectName() async {
 
   final input = await completer.future; // Définit le renvoi à l'entrée de l'user récupérée par le future complété
   return input; // Peut être "" mais pas null
+}
+
+Future<bool?> isRecyclable(String materiauId) async {
+  try {
+    print("Fetching from materiau...");
+    final result = await pb
+      .collection('materiau')
+      .getOne( // On récupère le record associé à l'id entré
+        materiauId,
+      );
+    bool recyclability = result.toJson()['recyclabilite'];
+    print("Recyclability found");
+    return recyclability;
+  } catch (e) {
+    print('Error while fetching full list from PocketBase : $e');
+    return null;
+  }
 }
