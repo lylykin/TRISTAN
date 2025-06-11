@@ -14,7 +14,9 @@ class LeSaviezVous extends StatelessWidget {
         "Le saviez-vous ?\n1,5 million d'animaux sont tués par le plastique chaque année",
         "Conseils:\nPensez à bien vider les bouteilles et flacons.\n Ne pas laver les emballages, Écraser les bouteilles dans le sens de la hauteur.\n Pensez à visser les bouchons sur les bouteilles pour qu’ils soient recyclés ou bien gardez les pour l’association BOUCHONS d’AMOUR : ",
       ],
-      "hdpe": [],
+      "hdpe": [
+        "Le saviez-vous?\nLe HDPE est l’un des plastiques les plus résistants!",
+      ],
       "pvc": [
         "Le saviez-vous ?\nLe PVC est composé de : 57 % de sel de mer + 43 % de dérivés du pétrole",
         "Le saviez-vous ?\nLe PVC a été découvert par accident en 1835 par Henri Victor Regnault, un physicien français",
@@ -57,6 +59,22 @@ class LeSaviezVous extends StatelessWidget {
       "Missing Material Name":[
         "Le saviez-vous ?\nIl arrive des erreurs même aux meilleurs.\nNotre équipee a un matériau non pris en charge pour les fun facts dans la base de donnée, merci de votre compréhension.",
       ],
+      "acier":[
+        "Le saviez-vous ?\nPour fabriquer de l’acier, il faut du minerai du fer, du charbon, de la chaux et des ferro-alliages",
+        "Le saviez-vous? \nL’acier est recyclable à 100%, c’est même le matériau le plus recyclé au monde !",
+        "Le saviez-vous? \nUne tonne d’acier recyclé permet d’économiser 1,5 tonnes de minerai de fer, 0,65 tonne de charbon et 0,3 tonne de chaux.\nUne tonne d’acier recyclée permet d’économiser 70 % d’énergie.\nUne tonne d’acier recyclée permet d’économiser 1,5 tonne de CO2.\n80 à 90 % de l’acier produit est toujours utilisé à ce jour.",
+      ],
+      "empty":[
+        "N'oubliez pas de mettre un objet dans la boite ! ",
+        " Tristan n'a rien detecté, êtes vous sûr d'avoir ajouté un objet?",
+      ],
+      "bois":[
+        "Le bois n'est pas récupéré dans les poubelles de tri. Veuillez l'amener dans une dechetterie!!\n Le saviez-vous?\n En France, selon l’ADEME, ce sont plus de 7,2 millions de tonnes de déchets de bois qui sont produits tous les ans.\n Sur ces 7,2 millions, 28 % sont utilisés pour la valorisation énergétique et 61 % sont recyclés pour fabriquer de nouveaux produits",
+      ]
+      "pes":[
+        "Le saviez-vous?\nLe polyester sèche plus vite que le coton.",
+        "Le saviez-vous?\nIl peut être 100 % recyclé !\nMais il peut mettre plus de 200 ans à se décomposer dans la nature...\n D’où l’intérêt de le recycler!",
+      ]
     };
     String? displayInfoText;
     if (facts[materialId]?.isNotEmpty ?? false) { // Si le matériau est reconnu (donc bool non null) et que il existe des conseils associés
