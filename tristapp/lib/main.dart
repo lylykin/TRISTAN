@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tristapp/page/binselectpage.dart';
 import 'package:tristapp/page/loginpage.dart';
 import 'package:tristapp/page/mappage.dart';
+import 'package:tristapp/page/signin.dart';
 import 'package:tristapp/page/userpage.dart';
 import 'package:tristapp/page/settingpage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,6 +13,7 @@ import 'package:tristapp/widget/tristanlogodisplay.dart';
 import 'package:tristapp/widget/notificationbubble.dart';
 
 ValueNotifier<bool> isLoggedInNotifier = ValueNotifier(pb.authStore.isValid); // Pocketbase informe si l'utilisateur est connecté (false/true)
+ValueNotifier<bool> isSigningInNotifier = ValueNotifier(false); // Rend compte de si l'utilisateur se connecte ou s'inscrit
 
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
@@ -27,26 +29,32 @@ class MainApp extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: isLoggedInNotifier,
       builder: (context, isLoggedIn, child) {
-        return MaterialApp(
-          title: "TRISTAN",
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-            brightness: Brightness.light, // erreur si on met dark
-          ),
-          home: Scaffold(
-            body: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: Svg('assets/bgtrue.svg'),
-                  // image: SvgPicture.asset(assetName : 'bgtrue.svg'),
-                  fit: BoxFit.cover,
-                ),
+        return ValueListenableBuilder(
+          valueListenable: isSigningInNotifier,
+          builder: (context, isSigningIn, child) {
+            return MaterialApp(
+              title: "TRISTAN",
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+                brightness: Brightness.light, // erreur si on met dark
               ),
-              child: isLoggedIn
-                ? HomePage()
-                : LoginPage()
-            ),
-          )
+              home: Scaffold(
+                body: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: Svg('assets/bgtrue.svg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: isLoggedIn
+                    ? HomePage()
+                    : isSigningIn
+                      ? SigninPage()
+                      : LoginPage(),
+                ),
+              )
+            );
+          }
         );
       }
     );

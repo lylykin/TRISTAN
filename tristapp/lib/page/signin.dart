@@ -15,12 +15,13 @@ class _SigninPageState extends State<SigninPage> {
   final passController = TextEditingController();
   final confirmPassController = TextEditingController();
   String? error;
+  bool showPass = false;
+  bool showConfirmPass = false;
 
   Future<void> signin() async {
     try {
-      await pb.collection('users').create(
+      await pb.collection('users').create( // Needs to have access to create user even unauthentified !
         body: {
-          "emailVisibility": false,
           "email" : idController.text, 
           "name" : nameController.text,
           "password" : passController.text,
@@ -28,9 +29,9 @@ class _SigninPageState extends State<SigninPage> {
         }
       );
       setState(() => error = null); // Modifie l'état en avertissant le constructeur
-      // INSERER CONNEXION DE L'USER OU DIRECTION VERS PAGE LOGIN
+      setState(() => isSigningInNotifier.value = false);
     } catch (e) {
-      setState(() => error = "Erreur de d'inscription WIP PLACEHOLDER");
+      setState(() => error = "Erreur de d'inscription, les mots de passe ne correspondent pas ou ne sont pas assez longs (8 caractères min)");
     }
   }
 
@@ -68,24 +69,50 @@ class _SigninPageState extends State<SigninPage> {
                     ),
                     SizedBox(height: 10),
                     TextField(
-                      controller: idController,
+                      controller: nameController,
                       decoration : const InputDecoration(labelText: "Entrez le nom d'utilisateur", hintText: "ex : Stéphane Delafuente", filled: true),
                       autofocus: false,
                     ),
-                    if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     TextField(
                       controller: passController,
-                      decoration : const InputDecoration(labelText: "Entrez le mot de passe", filled: true),
-                      autofocus: true,
-                      obscureText: true,
+                      decoration : InputDecoration(
+                        labelText: "Entrez le mot de passe",
+                        hintText: "Au moins huits caractères",
+                        filled: true,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() => showPass = !showPass);
+                          },
+                          icon: Icon(
+                            !showPass
+                              ? Icons.visibility
+                              : Icons.visibility_off
+                            )
+                        )
+                      ),
+                      autofocus: false,
+                      obscureText: !showPass,
                     ),
                     SizedBox(height: 10),
                     TextField(
                       controller: confirmPassController,
-                      decoration : const InputDecoration(labelText: "Confirmez le mot de passe", filled: true),
+                      decoration : InputDecoration(
+                        labelText: "Confirmez le mot de passe",
+                        filled: true,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() => showConfirmPass = !showConfirmPass);
+                          },
+                          icon: Icon(
+                            !showConfirmPass
+                              ? Icons.visibility
+                              : Icons.visibility_off
+                            )
+                        )
+                      ),
                       autofocus: false,
-                      obscureText: true,
+                      obscureText: !showConfirmPass,
                     ),
                     if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     SizedBox(height: 20),
@@ -93,7 +120,14 @@ class _SigninPageState extends State<SigninPage> {
                     onPressed: () {
                       signin();
                     },
-                    child: const Text("S'inscrire")
+                    child: const Text("S'inscrire avec ces identifiants et se connecter")
+                    ),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                    onPressed: () {
+                      setState(() => isSigningInNotifier.value = false);
+                    },
+                    child: const Text("Retour à la connexion")
                     ),
                   ],
                 ),

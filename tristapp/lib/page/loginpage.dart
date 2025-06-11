@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/main.dart';
+import 'package:tristapp/page/signin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +14,8 @@ class _LoginPageState extends State<LoginPage> {
   final idController = TextEditingController();
   final passController = TextEditingController();
   String? error;
+  String? resetEmailSent;
+  bool showPass = false;
 
   Future<void> login() async {
     try {
@@ -26,6 +29,17 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       setState(() => error = "Erreur de connexion : mot de passe ou identifiant incorrect");
+    }
+  }
+
+  Future<void> resetPass() async {
+    try {
+      await pb.collection('users').requestPasswordReset(idController.text);
+      setState(() => resetEmailSent = "Email envoyé à l'adresse ${idController.text}");
+      setState(() => error = null); // Modifie l'état en avertissant le constructeur
+    } catch (e) {
+      setState(() => resetEmailSent = null);
+      setState(() => error = "Erreur de réinitialisation : email vide ou non existant");
     }
   }
 
@@ -64,19 +78,61 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 10),
                     TextField(
                       controller: passController,
-                      decoration : const InputDecoration(labelText: "Entrez le mot de passe", filled: true),
+                      decoration : InputDecoration(
+                        labelText: "Entrez le mot de passe",
+                        filled: true,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() => showPass = !showPass);
+                          },
+                          icon: Icon(
+                            !showPass
+                              ? Icons.visibility
+                              : Icons.visibility_off
+                            )
+                        )
+                      ),
                       autofocus: false,
-                      obscureText: true,
+                      obscureText: !showPass,
                     ),
                     if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                    onPressed: () {
-                      login();
-                    },
-                    child: const Text("Se connecter")
+                    TextButton(
+                      onPressed: () {
+                        resetPass();
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Reset Password",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 99, 99, 101),
+                            decoration: TextDecoration.underline
+                          )
+                        )
+                      )
                     ),
-                    SizedBox(height: 10),  // VVVVV DEBUG MODE ONLY VVVVVV
+                    if (resetEmailSent != null) Text(resetEmailSent!, style: TextStyle(color: Color.fromARGB(255, 88, 112, 99))),
+                    SizedBox(height: 5),
+                    ElevatedButton(
+                      onPressed: () {
+                        login();
+                      },
+                      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Theme.of(context).highlightColor)),
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Se connecter",
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Theme.of(context).colorScheme.primary),
+                        )
+                      )
+                    ),
+                    SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() => isSigningInNotifier.value = true);
+                      },
+                      child: const Text("Créer un compte"),
+                    ),
+                    SizedBox(height: 5),  // VVVVV DEBUG MODE ONLY VVVVVV
                     ElevatedButton(
                     onPressed: () {
                       authenticateAdmin();
