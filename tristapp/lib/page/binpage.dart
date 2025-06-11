@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tristapp/widget/aucunresultatdisplay.dart';
 import 'package:tristapp/widget/reloadbutton.dart';
 import 'package:tristapp/widget/itemshow.dart';
 import 'package:tristapp/data/sensordata.dart';
@@ -19,7 +20,7 @@ class BinPage extends StatelessWidget {
           for (Map<String, dynamic>? record in itemsDataHistory) {
             if ( // Récupère toutes les données non null, provenant de la borne séléctionnée, étant de la phase 2 (objet!=null) (déjà traitée pour l'utilisateur courant)
               record!['expand']['sparkfun_via_objet'] != null &&
-              record!['expand']['sparkfun_via_objet'][0]['borne'] == idBorne // [0] car normalement une seule mesure par objet donc pas besoin de parcourir la liste
+              record['expand']['sparkfun_via_objet'][0]['borne'] == idBorne // [0] car normalement une seule mesure par objet donc pas besoin de parcourir la liste
             ) { 
               itemsNameStationDataHistory.add(record); // On ajoute les données objet liées à tous les objets de l'user pour la borne (contenant sparkfun dans le expand)
             }
@@ -44,12 +45,14 @@ class BinPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: itemsNameStationDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
-                  itemBuilder: (BuildContext context, int index) {
-                    return ItemShow(nullableIndex: index, itemsDataHistory : itemsNameStationDataHistory);
-                  },
-                ),
+                child: (itemsNameStationDataHistory.isNotEmpty) 
+                  ? ListView.builder(
+                      itemCount: itemsNameStationDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
+                      itemBuilder: (BuildContext context, int index) {
+                        return ItemShow(nullableIndex: index, itemsDataHistory : itemsNameStationDataHistory);
+                      },
+                    )
+                  : AucunResultatDisplay()
               ),
             ],
           ),

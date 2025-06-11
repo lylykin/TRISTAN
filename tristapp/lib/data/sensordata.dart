@@ -13,6 +13,7 @@ final ValueNotifier<List<Map<String, dynamic>>> itemsHistoryNotifier = ValueNoti
 final ValueNotifier<bool> displayInputObjectNotifier = ValueNotifier(false);
 final ValueNotifier<String> inputObjectNotifier = ValueNotifier("");
 final ValueNotifier<bool> subscribedNotifier = ValueNotifier(true);
+final ValueNotifier<int> nObjectScannedUserNotifier = ValueNotifier(0);
 
 Completer<String>? _currentInputCompleter; // Collecte les entrées de l'utilisateur
 
@@ -79,7 +80,7 @@ void subscribeToObjet() async {
           
           record['recyclability'] = await isRecyclable(record['materiau']); // Ajoute la recyclabilité de l'objet récupéré
 
-          print(record);
+          nObjectScannedUserNotifier.value += 1; // Ajout d'un nouvel objet au score
           itemsDataNotifier.value = record;
           print("Updated realtime measurement");
         } catch (err) {
@@ -127,7 +128,9 @@ void fetchItemsData() async {
         sort: '-updated',
       );
     List<Map<String, dynamic>> recordsList = [];
+    nObjectScannedUserNotifier.value = 0; // Remise à zéro du compteur de score (pour éviter d'incrémenter indéfiniment)
     for (RecordModel record in resultList) {
+      nObjectScannedUserNotifier.value += 1; // Adaptation du score en fonction du nombre d'objets scannés
       Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
       recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
       recordsList.add(recordMap);

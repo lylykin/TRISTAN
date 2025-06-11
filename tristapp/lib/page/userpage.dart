@@ -1,21 +1,30 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/usercard.dart';
 import 'package:tristapp/widget/dynamiclastmesure.dart';
 import 'package:tristapp/widget/objectnameinput.dart';
+import 'package:tristapp/data/sensordata.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    String userName = "Stéphane Delafuente";
-    int userId = 4269;
-    double score = 2; // A récupérer dans un widget avec state depuis la database
+    String userName = (pb.authStore.record!.data['name'].isNotEmpty)
+      ? pb.authStore.record!.data['name']
+      : "Aucun nom d'utilisateur";
+    String userId = pb.authStore.record?.data['id'];
+    
     return Column(
       children: [
-        UserCard(refText: "Nom d'utilisafeur : $userName"),
+        UserCard(refText: "Nom d'utilisateur : $userName"),
         UserCard(refText: "identifiant : $userId"),
-        UserCard(refText: "Score : $score"),
+        ValueListenableBuilder(
+          valueListenable : nObjectScannedUserNotifier,
+          builder : (context, nObjectScannedUser, child) {
+            return UserCard(refText: "Score : $nObjectScannedUser"); // Le score équivaut au nombre d'objets différents scannés par l'utilisateur
+          }
+        ),
         SizedBox(height: 15),
         RichText(
           text: TextSpan(

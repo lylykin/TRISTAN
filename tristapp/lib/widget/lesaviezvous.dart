@@ -57,20 +57,20 @@ class LeSaviezVous extends StatelessWidget {
         "Conseils: Inutile de laver les briques alimentaires avant de les déposer dans la colonne jaune. Séparez les emballages carton de leurs suremballages en plastique (barquettes, sachets, films). Les gros cartons d’emballage marron sont à apporter en déchèterie.",
       ],
       "Missing Material Name":[
-        "Le saviez-vous ?\nIl arrive des erreurs même aux meilleurs.\nNotre équipee a un matériau non pris en charge pour les fun facts dans la base de donnée, merci de votre compréhension.",
+        "Le saviez-vous ?\nIl arrive des erreurs même aux meilleurs.\nNotre équipe a un matériau non pris en charge pour les fun facts dans la base de donnée, merci de votre compréhension.",
       ],
       "acier":[
         "Le saviez-vous ?\nPour fabriquer de l’acier, il faut du minerai du fer, du charbon, de la chaux et des ferro-alliages",
-        "Le saviez-vous? \nL’acier est recyclable à 100%, c’est même le matériau le plus recyclé au monde !",
-        "Le saviez-vous? \nUne tonne d’acier recyclé permet d’économiser 1,5 tonnes de minerai de fer, 0,65 tonne de charbon et 0,3 tonne de chaux.\nUne tonne d’acier recyclée permet d’économiser 70 % d’énergie.\nUne tonne d’acier recyclée permet d’économiser 1,5 tonne de CO2.\n80 à 90 % de l’acier produit est toujours utilisé à ce jour.",
+        "Le saviez-vous?\nL’acier est recyclable à 100%, c’est même le matériau le plus recyclé au monde !",
+        "Le saviez-vous?\nUne tonne d’acier recyclé permet d’économiser 1,5 tonnes de minerai de fer, 0,65 tonne de charbon et 0,3 tonne de chaux.\nUne tonne d’acier recyclée permet d’économiser 70 % d’énergie.\nUne tonne d’acier recyclée permet d’économiser 1,5 tonne de CO2.\n80 à 90 % de l’acier produit est toujours utilisé à ce jour.",
       ],
       "empty":[
-        "N'oubliez pas de mettre un objet dans la boite ! ",
-        " Tristan n'a rien detecté, êtes vous sûr d'avoir ajouté un objet?",
+        "N'oubliez pas de mettre un objet dans la boite !",
+        "Tristan n'a rien detecté, êtes vous sûr d'avoir ajouté un objet?",
       ],
       "bois":[
         "Le bois n'est pas récupéré dans les poubelles de tri. Veuillez l'amener dans une dechetterie!!\n Le saviez-vous?\n En France, selon l’ADEME, ce sont plus de 7,2 millions de tonnes de déchets de bois qui sont produits tous les ans.\n Sur ces 7,2 millions, 28 % sont utilisés pour la valorisation énergétique et 61 % sont recyclés pour fabriquer de nouveaux produits",
-      ]
+      ],
       "pes":[
         "Le saviez-vous?\nLe polyester sèche plus vite que le coton.",
         "Le saviez-vous?\nIl peut être 100 % recyclé !\nMais il peut mettre plus de 200 ans à se décomposer dans la nature...\n D’où l’intérêt de le recycler!",
