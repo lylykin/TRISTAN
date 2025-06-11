@@ -15,16 +15,21 @@ class _DynamicLastMesureState extends State<DynamicLastMesure> {
     
     return ValueListenableBuilder<List<Map<String, dynamic>?>>(
       valueListenable: itemsHistoryNotifier,
-      builder: (context, sparkfunHistory, child) {
+      builder: (context, itemsHistory, child) {
         return ValueListenableBuilder<Map<String, dynamic>?>(
           valueListenable: itemsDataNotifier,
           builder: (context, itemsData, child) {
-            return Placeholder();//ItemShow(nullableIndex: 0, itemsDataHistory : [itemsData]);
-            //if (sparkfunDataNotifier.value == null) {
-            //  return ItemShow(nullableIndex: 0, sparkfunDataHistory : sparkfunHistory);
-            //} else {
-            //  return ItemShow(nullableIndex: 0, sparkfunDataHistory : [sparkfunData]);
-            //}
+            if (itemsData != null) {
+              return ItemShow(nullableIndex: 0, itemsDataHistory : [itemsData]);
+            } else {
+              if (itemsHistory.isNotEmpty) {
+                return ItemShow(nullableIndex: 0, itemsDataHistory : itemsHistory);
+              } else {
+                return SizedBox.shrink(); // Si la connexion pocketbase pas encore effectuée ou la récupération d'objets encore en cours (évite le plantage)
+              }
+            }
+//ItemShow(nullableIndex: 0, itemsDataHistory : [itemsData]);
+
           }
         );
       }

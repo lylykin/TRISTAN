@@ -61,12 +61,31 @@ void subscribeToSparkfun() async {
 void subscribeToObjet() async {
   try {
     print("Subscribing to objet...");
-    pb.collection('objet').subscribe('*', (e) {
-      print("Event received from objet!");
+    pb.collection('objet').subscribe('*', (e) async {
+      print("Event received from objet : ${e.action}");
       Map<String, dynamic>? record =
-          e.toJson();
+          e.record!.toJson();
       print(record);
-      itemsDataNotifier.value = record;
+      if (e.action == "create" || e.action == "update") {
+        try {
+          record['expand'] = {};
+          record['expand']['sparkfun_via_objet'] = []; // Définition du format pour coller au format historique
+          List<dynamic> expandList = record['expand']['sparkfun_via_objet'];
+          RecordModel result = await pb.collection('sparkfun').getFirstListItem( // Récupération de la première (normalement seule) mesure du capteur correspondant à l'objet 
+            'objet = "${record['id']}"',
+            expand: "borne"
+          );
+          expandList.add(result.toJson());
+          
+          record['recyclability'] = await isRecyclable(record['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+
+          print(record);
+          itemsDataNotifier.value = record;
+          print("Updated realtime measurement");
+        } catch (err) {
+          print("Error while updating realtime measurement : $err");
+        }
+      }
     });
     print("Subscription done");
   } catch (e) {
@@ -113,6 +132,7 @@ void fetchItemsData() async {
       recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
       recordsList.add(recordMap);
     }
+    print(recordsList);
     itemsHistoryNotifier.value = recordsList;
     print("Fetch done for objet");
   } catch (e) {
@@ -128,56 +148,56 @@ void newObject(lastMesure) async {
     String? userId = pb.authStore.record!.id; // On suppose que l'utilisateur doit être connecté sous peine d'erreur
     print("Authenticated, collecting user input for objet...");
     String objectNameInput = await askUserObjectName();
+
+    if (objectNameInput.isEmpty) { // Si aucun nom entré, nom par défaut
+      objectNameInput = "Objet sans nom";
+    }
     print("User input for objet collected : $objectNameInput");
 
-    if (objectNameInput.isNotEmpty) {
-      // Si l'utilisateur souhaite personaliser le nom de l'objet / a répondu
-      // Get list of the user's scanned items
-      final resultList = await pb
-          .collection('objet')
-          .getFullList(
-            filter:
-                'user = "$userId"', // Guillemets nécessaires autour des valeurs String
-          );
-      List<Map<String, dynamic>?> objectsList = [];
-      for (RecordModel record in resultList) {
-        // Convertis les élements RecordModel de la liste en dictionnaires (Map)
-        objectsList.add(record.toJson());
-      }
-      print("User's objets collected");
-
-      bool contained = false; // Tiens compte si l'objet est dans la bdd
-      String objetId = "";
-      for (dynamic obj in objectsList) {
-        if (objectNameInput == obj['nom_objet']) {
-          // On suppose que les id ou nom de materiaux sont uniques pour chaque materiau et sont non vides
-          objetId = obj['id'];
-          contained = true;
-        }
-      }
-
-      if (!contained) {
-        // Si l'objet entré n'existe pas dans la bdd (not contained), l'ajouter
-        Map<String, dynamic> objetInfo = {
-          'user': userId,
-          'nom_objet': objectNameInput,
-        };
-        final createdRecord = await pb
-          .collection("objet")
-          .create(body: objetInfo);
-        print(objetInfo);
-        objetId = createdRecord.id;
-        print("Objet added in db");
-      }
-
-      // Récupère l'id de la dernière mesure insérée et lui ajoute l'objet inséré par l'utilisateur
-      Map<String, dynamic> lastMesureRecord =
-          lastMesure.toJson(); // On récupère l'élement sous forme de dico
-      pb.collection("sparkfun").update(
-        lastMesureRecord['id'],
-        body: <String, dynamic>{'objet': objetId},
-      );
+    // Si l'utilisateur souhaite personaliser le nom de l'objet / a répondu
+    // Get list of the user's scanned items
+    final resultList = await pb
+        .collection('objet')
+        .getFullList(
+          filter:
+              'user = "$userId"', // Guillemets nécessaires autour des valeurs String
+        );
+    List<Map<String, dynamic>?> objectsList = [];
+    for (RecordModel record in resultList) {
+      // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+      objectsList.add(record.toJson());
     }
+
+    print("User's objets collected");
+    bool contained = false; // Tiens compte si l'objet est dans la bdd
+    String objetId = "";
+    for (dynamic obj in objectsList) {
+      if (objectNameInput == obj['nom_objet']) {
+        // On suppose que les id ou nom de materiaux sont uniques pour chaque materiau et sont non vides
+        objetId = obj['id'];
+        contained = true;
+      }
+    }
+
+    if (!contained) {
+      // Si l'objet entré n'existe pas dans la bdd (not contained), l'ajouter
+      Map<String, dynamic> objetInfo = {
+        'user': userId,
+        'nom_objet': objectNameInput,
+      };
+      final createdRecord = await pb
+        .collection("objet")
+        .create(body: objetInfo);
+      objetId = createdRecord.id;
+      print("Objet added in db");
+    }
+    // Récupère l'id de la dernière mesure insérée et lui ajoute l'objet inséré par l'utilisateur
+    Map<String, dynamic> lastMesureRecord =
+        lastMesure.toJson(); // On récupère l'élement sous forme de dico
+    pb.collection("sparkfun").update(
+      lastMesureRecord['id'],
+      body: <String, dynamic>{'objet': objetId},
+    );
   } catch (e) {
     print('Error while updating objet using user input : $e');
   }

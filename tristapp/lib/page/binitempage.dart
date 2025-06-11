@@ -18,9 +18,11 @@ class _BinItemPageState extends State<BinItemPage> {
   Widget build(BuildContext context) {
     final int index = widget.index ?? 0;
     final materialId =
-        widget.itemsDataHistory?[index]?['nom_objet'] ??
-        "Erreur : Objet null";
-    final Map<String, dynamic> gps = widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'][0]['expand']['borne'];
+        widget.itemsDataHistory?[index]?['materiau'] ??
+        "Non identifié";
+    final Map<String, dynamic> gps = (widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'] != null)
+      ? widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'][0]['expand']['borne'] // Une seule mesure par objet donc [0] séléctionne l'unique valeur de la liste 'sparkfun_via_objet'
+      : {'lat_actuel' : null, 'long_actuel' : null};
     String latDisplay = (gps['lat_actuel'] == null || gps['lat_actuel'] == "") ? "Aucune donnée" : gps['lat_actuel'];
     String longDisplay = (gps['long_actuel'] == null || gps['long_actuel'] == "") ? "Aucune donnée" : gps['long_actuel'];
 
@@ -56,6 +58,28 @@ class _BinItemPageState extends State<BinItemPage> {
                 SizedBox(height: 15),
                 RichText(
                   text: TextSpan(
+                    text: "Matériau détecté : $materialId",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                      shadows: [Shadow(color: Theme.of(context).colorScheme.secondary, blurRadius: 40)]
+                    ),
+                  )
+                ),
+                SizedBox(height: 10),
+                RichText(
+                  text: TextSpan(
+                    text: "Coordonnées de la borne",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary
+                    ),
+                  )
+                ),
+                RichText(
+                  text: TextSpan(
                     text: "Latitude : $latDisplay",
                     style: TextStyle(
                       fontStyle: FontStyle.italic,
@@ -63,7 +87,7 @@ class _BinItemPageState extends State<BinItemPage> {
                       color: Theme.of(context).colorScheme.secondary
                     ),
                   )
-                ), // Une seule mesure par objet donc [0] séléctionne l'unique valeur de la liste 'sparkfun_via_objet'
+                ),
                 RichText(
                   text: TextSpan(
                     text: "Longitude : $longDisplay",
@@ -74,6 +98,7 @@ class _BinItemPageState extends State<BinItemPage> {
                     ),
                   )
                 ),
+                SizedBox(height: 30),
                 TristanCard(materialId: materialId),
               ],
             ),

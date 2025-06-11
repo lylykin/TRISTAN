@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/page/datapage.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:tristapp/widget/tristanlogodisplay.dart';
 import 'package:tristapp/widget/notificationbubble.dart';
 
 ValueNotifier<bool> isLoggedInNotifier = ValueNotifier(pb.authStore.isValid); // Pocketbase informe si l'utilisateur est connecté (false/true)
@@ -87,6 +88,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             SafeArea(
               child: NavigationRail(
+                leading: TristanLogoDisplay(),
                 destinations: [
                   NavigationRailDestination(
                     icon: Stack( // Permet l'affichage conditionnel d'une bulle de notification

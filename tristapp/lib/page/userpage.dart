@@ -16,7 +16,7 @@ class UserPage extends StatelessWidget {
         UserCard(refText: "Nom d'utilisafeur : $userName"),
         UserCard(refText: "identifiant : $userId"),
         UserCard(refText: "Score : $score"),
-        SizedBox(height: 15,),
+        SizedBox(height: 15),
         RichText(
           text: TextSpan(
           style: DefaultTextStyle.of(context).style, // hérite du style global
@@ -25,7 +25,8 @@ class UserPage extends StatelessWidget {
             style: TextStyle(
               color: Theme.of(context).colorScheme.surfaceBright,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 18,
+              shadows: [Shadow(blurRadius: 15), Shadow(blurRadius: 30)]
               ),
             ),]
         )),

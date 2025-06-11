@@ -49,7 +49,10 @@ class _ItemShowState extends State<ItemShow> {
         ),
         title: RichText(
           text: TextSpan(
-            style: DefaultTextStyle.of(context).style, // hérite du style global
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSurface,
+              fontSize: 20,
+            ),
             children: [
               TextSpan(text: displayObjectFormat),
               TextSpan(
@@ -63,7 +66,10 @@ class _ItemShowState extends State<ItemShow> {
           text: TextSpan(
             style: DefaultTextStyle.of(context).style, // hérite du style global
             children: [TextSpan(
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+              ),
               text: recyclable,
               ),
             ],

@@ -18,8 +18,8 @@ class BinPage extends StatelessWidget {
         List<Map<String, dynamic>> itemsNameStationDataHistory = [];
           for (Map<String, dynamic>? record in itemsDataHistory) {
             if ( // Récupère toutes les données non null, provenant de la borne séléctionnée, étant de la phase 2 (objet!=null) (déjà traitée pour l'utilisateur courant)
-              record != null && 
-              record['expand']['sparkfun_via_objet'][0]['borne'] == idBorne // [0] car normalement une seule mesure par objet donc pas besoin de parcourir la liste
+              record!['expand']['sparkfun_via_objet'] != null &&
+              record!['expand']['sparkfun_via_objet'][0]['borne'] == idBorne // [0] car normalement une seule mesure par objet donc pas besoin de parcourir la liste
             ) { 
               itemsNameStationDataHistory.add(record); // On ajoute les données objet liées à tous les objets de l'user pour la borne (contenant sparkfun dans le expand)
             }
