@@ -15,6 +15,9 @@ import 'package:tristapp/widget/notificationbubble.dart';
 ValueNotifier<bool> isLoggedInNotifier = ValueNotifier(pb.authStore.isValid); // Pocketbase informe si l'utilisateur est connecté (false/true)
 ValueNotifier<bool> isSigningInNotifier = ValueNotifier(false); // Rend compte de si l'utilisateur se connecte ou s'inscrit
 
+// build app exe using : flutter build windows
+// file will be located from root in \build\windows\runner\Release\
+// Release file should be the one shared to share app
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
   runApp(const MainApp());
@@ -22,6 +25,7 @@ Future<void> main() async {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
+
 
   @override
   Widget build(BuildContext context) {

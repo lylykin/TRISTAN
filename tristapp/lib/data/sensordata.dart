@@ -10,6 +10,7 @@ final PocketBase pb = PocketBase('https://vps-2244fb93.vps.ovh.net'); // Interfa
 final ValueNotifier<Map<String, dynamic>?> itemsDataNotifier = ValueNotifier(null); // Valeurs temps réel communiquées avec l'app
 //final ValueNotifier<List<Map<String, dynamic>?>> sparkfunHistoryNotifier = ValueNotifier([]);
 final ValueNotifier<List<Map<String, dynamic>>> itemsHistoryNotifier = ValueNotifier([]); // Valeurs contenant l'ensemble des données des tables sous forme de liste
+final ValueNotifier<List<Map<String, dynamic>>> allUsersItemsHistoryNotifier = ValueNotifier([]); // Contient les données de base pour tous les objets de tout utilisateur
 final ValueNotifier<bool> displayInputObjectNotifier = ValueNotifier(false);
 final ValueNotifier<String> inputObjectNotifier = ValueNotifier("");
 final ValueNotifier<bool> subscribedNotifier = ValueNotifier(true);
@@ -28,6 +29,7 @@ Future<void> authenticateAdmin() async {
   if (pb.authStore.isValid) {
     subscribeToObjet();
     fetchItemsData();
+    fetchAllItemsData();
     isLoggedInNotifier.value = true;
   }
 }
@@ -82,6 +84,7 @@ void subscribeToObjet() async {
 
           nObjectScannedUserNotifier.value += 1; // Ajout d'un nouvel objet au score
           itemsDataNotifier.value = record;
+          print(record);
           print("Updated realtime measurement");
         } catch (err) {
           print("Error while updating realtime measurement : $err");
@@ -140,6 +143,28 @@ void fetchItemsData() async {
     print("Fetch done for objet");
   } catch (e) {
     print('Error while fetching full list from PocketBase : $e');
+  }
+}
+
+void fetchAllItemsData() async {
+  try {
+    print("Fetching from objet for all users...");
+    final resultList = await pb
+      .collection('objet')
+      .getFullList( // On prend les objets phase 2 (donc pas d'objet null) et on veut tous les objets
+        sort: '-updated',
+      );
+    List<Map<String, dynamic>> recordsList = [];
+    for (RecordModel record in resultList) {
+      Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
+      recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      recordsList.add(recordMap);
+    }
+    print(recordsList);
+    allUsersItemsHistoryNotifier.value = recordsList;
+    print("Fetch done for objet");
+  } catch (e) {
+    print('Error while fetching full list for all users from PocketBase : $e');
   }
 }
 

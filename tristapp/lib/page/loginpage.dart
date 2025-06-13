@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/main.dart';
-import 'package:tristapp/page/signin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       if (pb.authStore.isValid) {
         subscribeToObjet();
         fetchItemsData();
+        fetchAllItemsData();
         isLoggedInNotifier.value = true;
       }
     } catch (e) {
