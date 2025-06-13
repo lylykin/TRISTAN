@@ -1,25 +1,26 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class PieChartCustom extends StatefulWidget {
-  final Function displaySections;
-  final List<PieChartSectionData> sectionsListMaterials;
+class LineChartCustom extends StatefulWidget {
+  final Function dataFetch;
+  final data;
+  final leftAxis;
+  final bottomAxis;
   final List<Widget> indicatorList;
   final bool displayChart;
   final String? chartTitle;
   
-  const PieChartCustom({super.key, required this.displaySections, required this.sectionsListMaterials, required this.indicatorList, this.displayChart = false, this.chartTitle});
+  const LineChartCustom({super.key, required this.dataFetch, required this.data, required this.leftAxis, required this.bottomAxis, required this.indicatorList, this.displayChart = false, this.chartTitle});
 
   @override
-  State<PieChartCustom> createState() => _PieChartCustomState();
+  State<LineChartCustom> createState() => _LineChartCustomState();
 }
 
-class _PieChartCustomState extends State<PieChartCustom> {
-  int touchedSection = -1;
+class _LineChartCustomState extends State<LineChartCustom> {
 
   @override
   Widget build(BuildContext context) {
-    widget.displaySections(touchedSection); // Construction des indicator et des sections via le fichier parent traitant les données
+    //widget.displaySections(touchedSection); // Construction des indicator et des sections via le fichier parent traitant les données
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -48,25 +49,25 @@ class _PieChartCustomState extends State<PieChartCustom> {
                   SizedBox( // Nécessaire comme le pie chart dépasse du container si aucune limite spécifiée
                     width: 400,
                     height: 300,
-                    child: PieChart(
-                      PieChartData( // Construction du graphe selon les données en paramètres pré-traitées
-                        sections: widget.sectionsListMaterials,
-                        centerSpaceRadius: 40,
-                        pieTouchData: PieTouchData(
-                          touchCallback: (FlTouchEvent event, touchResponse) {
-                            if (event is FlTapUpEvent) {
-                              if (touchResponse == null ||
-                                touchResponse.touchedSection == null
-                              ) { // Si pas d'interaction ou pas de section particulière touchée, réinitialiser touchedSection
-                                touchedSection = -1;
-                                return;
-                              }
-                              setState(() {
-                                touchedSection = touchResponse.touchedSection!.touchedSectionIndex;
-                              });
-                            }
-                          }
-                        )
+                    child: LineChart(
+                      LineChartData(
+                        titlesData: FlTitlesData(
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 1,
+                              //getTitlesWidget: bottomTitleWidgets,
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              //getTitlesWidget: leftTitleWidgets,
+                              interval: 1,
+                              reservedSize: 36,
+                            ),
+                          ),
+                        ),
                       )
                     )
                   ),

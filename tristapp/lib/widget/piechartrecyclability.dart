@@ -3,18 +3,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:tristapp/widget/indicator.dart';
 import 'package:tristapp/widget/piechartcustom.dart';
 
-class PieChartMaterials extends StatefulWidget {
+class PieChartRecyclability extends StatefulWidget {
   final List<Map<String, dynamic>> itemsHistory;
   final String? chartTitle;
-  const PieChartMaterials({super.key, required this.itemsHistory, this.chartTitle});
+  const PieChartRecyclability({super.key, required this.itemsHistory, this.chartTitle});
 
   @override
-  State<PieChartMaterials> createState() => _PieChartMaterialsState();
+  State<PieChartRecyclability> createState() => _PieChartRecyclabilityState();
 }
 
-class _PieChartMaterialsState extends State<PieChartMaterials> {
-  final colorSet = [Color.fromARGB(255, 134, 139, 240),Color.fromARGB(255, 139, 247, 180),Color.fromARGB(255, 248, 197, 138),Color.fromARGB(255, 250, 137, 128),Color.fromARGB(255, 128, 238, 250),Color.fromARGB(255, 250, 128, 228),Color.fromARGB(255, 128, 250, 209),Color.fromARGB(255, 240, 107, 98),Color.fromARGB(255, 74, 225, 107),Color.fromARGB(255, 249, 97, 254)];
-  final Map<String, int> materialOccurences = {};
+class _PieChartRecyclabilityState extends State<PieChartRecyclability> {
+  final colorSet = [Color.fromARGB(255, 134, 240, 134),Color.fromARGB(255, 247, 155, 139)];
+  Map<String, int> recyclableMaterialOccurences = {"Recyclable" : 0, "Non recyclable" : 0};
   bool displayChart = false;
   
   @override
@@ -25,34 +25,34 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
 
     void displaySections(touchedSection) {
       (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
-      materialOccurences.clear();
+      recyclableMaterialOccurences = {"Recyclable" : 0, "Non recyclable" : 0};
       for (int objetPosition = 0; objetPosition < widget.itemsHistory.length; objetPosition++) { // Fills the data Map for the chart
-        String materialName = widget.itemsHistory[objetPosition]['materiau'];
-        if (materialOccurences.containsKey(materialName)) {
-          materialOccurences[materialName] = materialOccurences[materialName]! + 1;
+        bool recyclable = widget.itemsHistory[objetPosition]['recyclability'];
+        if (recyclable) {
+          recyclableMaterialOccurences["Recyclable"] = recyclableMaterialOccurences["Recyclable"]! + 1;
         } else {
-          materialOccurences[materialName] = 1;
+          recyclableMaterialOccurences["Non recyclable"] = recyclableMaterialOccurences["Non recyclable"]! + 1;
         }  
       }
       sectionsListMaterials.clear();
       indicatorList.clear();
       int materialSectionPosition = 0;
 
-      materialOccurences.forEach((materialName, materialWeight) {
-        Color materialColor = colorSet[materialSectionPosition % colorSet.length]; // La position modulo la longueur de la liste pour réutiliser les couleurs
+      recyclableMaterialOccurences.forEach((recyclabilty, occurences) {
+        Color materialColor = colorSet[materialSectionPosition]; // La position modulo la longueur de la liste pour réutiliser les couleurs
         final bool isTouched = (materialSectionPosition == touchedSection); // Si jamais la section à la position est la section touchée par l'user, définition d'un radius différent
         final double radius = isTouched ? 60.0 : 50.0;
-        final double percentage = materialWeight/totalWeight*100;
+        final double percentage = occurences/totalWeight*100;
 
         sectionsListMaterials.add(
           PieChartSectionData(
-            value: materialWeight.toDouble(),
+            value: occurences.toDouble(),
             color: materialColor,
             radius: radius,
             showTitle: true,
             title: isTouched
-              ? '$materialName\n$materialWeight objet${(materialWeight == 1) ? '' : 's'}\n${percentage.toStringAsPrecision(3)}%'
-              : materialName, // Arrondi à trois chiffres significatifs
+              ? '${percentage.toStringAsPrecision(3)} %\n$occurences objet${(occurences == 1) ? '' : 's'}'
+              : '${percentage.toStringAsPrecision(3)} %', // Arrondi à trois chiffres significatifs
             titleStyle: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -64,7 +64,7 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
         indicatorList.add(
           Indicator(
             color: materialColor,
-            text: materialName,
+            text: recyclabilty,
           )
         );
         indicatorList.add(

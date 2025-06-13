@@ -41,7 +41,6 @@ class UserPage extends StatelessWidget {
         SizedBox(height: 10,),
         DynamicLastMesure(),
         ObjectNameInput(),
-        //ElevatedButton(onPressed: newObject, child: Text("L'objet là"))
       ],
     );
   }
