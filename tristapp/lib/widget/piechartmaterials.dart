@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:tristapp/widget/indicator.dart';
+import 'package:tristapp/widget/piechartcustom.dart';
 
 class PieChartMaterials extends StatefulWidget {
   final List<Map<String, dynamic>> itemsHistory;
-  const PieChartMaterials({super.key, required this.itemsHistory});
+  final String? chartTitle;
+  const PieChartMaterials({super.key, required this.itemsHistory, this.chartTitle});
 
   @override
   State<PieChartMaterials> createState() => _PieChartMaterialsState();
@@ -15,7 +17,7 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
   final Map<String, int> materialOccurences = {};
   bool displayChart = false;
   
-  int touchedSection = -1;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
       totalWeight += materialWeight;
     });
 
-    void displaySections() {
+    void displaySections(touchedSection) {
       (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
       materialOccurences.clear();
       for (int objetPosition = 0; objetPosition < widget.itemsHistory.length; objetPosition++) { // Fills the data Map for the chart
@@ -80,73 +82,6 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
       });
     }
 
-    displaySections();
-
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Container(
-        height: 400,
-        width: 550,
-        padding: EdgeInsets.all(1),
-        decoration: BoxDecoration(
-          color: Theme.of(context).splashColor,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: 10),
-            RichText(text: TextSpan(
-              text: "Répartition des matériaux analysés",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
-                fontWeight: FontWeight.bold,
-                fontSize: 18
-              ),
-            )),
-            Row(
-                children: [
-                  SizedBox(
-                    width: 400,
-                    height: 300, // Même hauteur que le container pour éviter le dépassement vertical
-                    child: displayChart
-                      ? PieChart(
-                          PieChartData(
-                            sections: sectionsListMaterials,
-                            centerSpaceRadius: 40,
-                            pieTouchData: PieTouchData(
-                              touchCallback: (FlTouchEvent event, touchResponse) {
-                                if (event is FlTapUpEvent) {
-                                  if (touchResponse == null ||
-                                    touchResponse.touchedSection == null
-                                  ) { // Si pas d'interaction ou pas de section particulière touchée, réinitialiser touchedSection
-                                    touchedSection = -1;
-                                    return;
-                                  }
-                                  setState(() {
-                                    touchedSection = touchResponse.touchedSection!.touchedSectionIndex;
-                                  });
-                                }
-                              }
-                            )
-                          )
-                        )
-                      : Text('Aucune donnée'),
-                  ),
-                  Flexible(
-                    flex: 0,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: indicatorList,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
+    return PieChartCustom(displaySections: displaySections, sectionsListMaterials: sectionsListMaterials, indicatorList: indicatorList, displayChart: displayChart, chartTitle: widget.chartTitle);
   }
 }

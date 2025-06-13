@@ -15,6 +15,9 @@ class _ChartsPageState extends State<ChartsPage> {
 
   @override
   Widget build(BuildContext context) {
+    fetchItemsData();
+    fetchAllItemsData(); // Récupération des données utiles pour les graphes
+    
     return ValueListenableBuilder(
       valueListenable: acessToChartsNotifier,
       builder: (context, acessToCharts, child) {
@@ -49,13 +52,13 @@ class _ChartsPageState extends State<ChartsPage> {
                 ValueListenableBuilder<List<Map<String, dynamic>>>( // Reconstrution du widget automatique à chaque changement des data
                   valueListenable: itemsHistoryNotifier,
                   builder: (context, itemsHistory, child) {
-                    return PieChartMaterials(itemsHistory: itemsHistory);
+                    return PieChartMaterials(itemsHistory: itemsHistory, chartTitle: "Répartition des matériaux analysés");
                   }
                 ),
                 ValueListenableBuilder<List<Map<String, dynamic>>>( // Reconstrution du widget automatique à chaque changement des data
                   valueListenable: allUsersItemsHistoryNotifier,
                   builder: (context, allUsersItemsHistory, child) {
-                    return PieChartMaterials(itemsHistory: allUsersItemsHistory);
+                    return PieChartMaterials(itemsHistory: allUsersItemsHistory, chartTitle: "Matériaux analysés par l'ensemble des utilisateurs");
                   }
                 ),
               ],
