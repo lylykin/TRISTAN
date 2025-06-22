@@ -18,6 +18,7 @@ class ManualSubscribeState extends State<ManualSubscribe> {
           return FilledButton(
             onPressed: () { // Réessaie la liaison de données realtime récupérées sur PocketBase
               subscribedNotifier.value = true;
+              subscribeToSparkfun();
               subscribeToObjet();
             },
             child: RichText(

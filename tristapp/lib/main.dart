@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
               title: "TRISTAN",
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-                brightness: Brightness.light, // erreur si on met dark
+                brightness: Brightness.light, // BUG : erreur si on met dark
               ),
               home: Scaffold(
                 body: Container(

@@ -1,16 +1,19 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:tristapp/widget/indicator.dart';
+
 
 class LineChartCustom extends StatefulWidget {
   final Function dataFetch;
-  final data;
-  final leftAxis;
-  final bottomAxis;
-  final List<Widget> indicatorList;
+  final List<FlSpot> data;
+  final Widget Function(double, TitleMeta)? leftAxis;
+  final Widget Function(double, TitleMeta)? bottomAxis;
+  final List<Indicator> indicatorList;
   final bool displayChart;
   final String? chartTitle;
+  final LineTouchData lineTouchDataCustom;
   
-  const LineChartCustom({super.key, required this.dataFetch, required this.data, required this.leftAxis, required this.bottomAxis, required this.indicatorList, this.displayChart = false, this.chartTitle});
+  const LineChartCustom({super.key, required this.dataFetch, required this.data, required this.leftAxis, required this.bottomAxis, required this.indicatorList, this.displayChart = false, this.chartTitle, this.lineTouchDataCustom = const LineTouchData()});
 
   @override
   State<LineChartCustom> createState() => _LineChartCustomState();
@@ -20,7 +23,6 @@ class _LineChartCustomState extends State<LineChartCustom> {
 
   @override
   Widget build(BuildContext context) {
-    //widget.displaySections(touchedSection); // Construction des indicator et des sections via le fichier parent traitant les données
 
     return Padding(
       padding: const EdgeInsets.all(10.0),
@@ -43,20 +45,31 @@ class _LineChartCustomState extends State<LineChartCustom> {
                 fontSize: 18
               ),
             )),
+            SizedBox(height: 15),
             widget.displayChart
             ? Row(
                 children: [
-                  SizedBox( // Nécessaire comme le pie chart dépasse du container si aucune limite spécifiée
+                  SizedBox( // Nécessaire comme le chart dépasse du container si aucune limite spécifiée
                     width: 400,
                     height: 300,
                     child: LineChart(
                       LineChartData(
                         titlesData: FlTitlesData(
+                          topTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false
+                            )
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: false
+                            )
+                          ),
                           bottomTitles: AxisTitles(
                             sideTitles: SideTitles(
                               showTitles: true,
                               interval: 1,
-                              //getTitlesWidget: bottomTitleWidgets,
+                              getTitlesWidget: widget.bottomAxis ?? defaultGetTitle // Ajoute widget.bottomAxis que s'il n'est pas nul
                             ),
                           ),
                           leftTitles: AxisTitles(
@@ -68,19 +81,34 @@ class _LineChartCustomState extends State<LineChartCustom> {
                             ),
                           ),
                         ),
+                        gridData: FlGridData(
+                          show: true,
+                          drawVerticalLine: false,
+                          horizontalInterval: 1,
+                          checkToShowHorizontalLine: (double value) {
+                            return value != 0 && value%2 == 0; // Toutes les 2 valeurs à partir de 0 exclu
+                          },
+                        ),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: widget.data
+                          )
+                        ],
+                        lineTouchData: widget.lineTouchDataCustom
                       )
                     )
                   ),
-                  Flexible(
-                    flex: 0,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.indicatorList,
+                  if (widget.indicatorList.isNotEmpty)
+                    Flexible(
+                      flex: 0,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: widget.indicatorList,
+                        ),
                       ),
                     ),
-                  ),
                 ],
             )
             : Center(

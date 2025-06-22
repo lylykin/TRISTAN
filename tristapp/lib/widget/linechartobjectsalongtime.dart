@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:tristapp/widget/indicator.dart';
 import 'package:tristapp/widget/linechartcustom.dart';
 
 class LineChartBorneUsage extends StatefulWidget {
@@ -19,12 +18,81 @@ class _LineChartBorneUsageState extends State<LineChartBorneUsage> {
   
   @override
   Widget build(BuildContext context) {
-    final List<PieChartSectionData> sectionsListMaterials = [];
-    final List<Widget> indicatorList = [];
-    
-    void dataFetch() {
+    final List<FlSpot> spotsList = [];
+    final DateTime today = DateTime.now();
+    final List<DateTime> last30Days = List.generate(30, (i) => DateTime(today.year, today.month, today.day).subtract(Duration(days: 29 - i)));
+    // DateTime earlierUsage = today;
 
+    final LineTouchData lineTouchDataCustom = LineTouchData(
+      touchTooltipData: LineTouchTooltipData(
+        getTooltipItems: (touchedSpots) {
+          // Affichage de la valeur x dans l'overlay (tooltip)
+          DateTime dateToDisplay = last30Days[touchedSpots[0].x.toInt()];
+          return [LineTooltipItem(
+            'Date : ${(dateToDisplay.day < 10) ? '0${dateToDisplay.day}' : dateToDisplay.day}/${(dateToDisplay.month < 10) ? '0${dateToDisplay.month}' : dateToDisplay.month}',
+            TextStyle(color: Theme.of(context).colorScheme.onSecondary)
+          )];
+        }
+      )
+    );
+
+    Widget bottomTitleWidgets(double value, TitleMeta meta) { // Made using imaNNeo's code
+      final style = TextStyle(
+        color: Theme.of(context).colorScheme.secondary,
+        fontSize: 5,
+        fontWeight: FontWeight.bold,
+      );
+
+      if (value < 0 || value > last30Days.length) {
+        return SizedBox.shrink();
+      }
+      DateTime dateToDisplay = last30Days[value.toInt()];
+      return SideTitleWidget(
+        space: 4,
+        meta: meta,
+        fitInside: SideTitleFitInsideData.disable(),
+        child: Text(
+          '${(dateToDisplay.day < 10) ? '0${dateToDisplay.day}' : dateToDisplay.day}/${(dateToDisplay.month < 10) ? '0${dateToDisplay.month}' : dateToDisplay.month}',
+          style: style,
+        ),
+      );
     }
+
+    void dataFetch() {
+      (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
+      for (var item in widget.itemsHistory) {
+        DateTime date = DateTime.parse(item['updated']).toLocal(); // for String format : DateFormat('dd/MM/yyyy HH:mm').format()
+
+        bool alreadyContainedInList = false;
+        borneUsageOccurences.forEach((String dateUsage, int occurences) {
+          if (
+            !alreadyContainedInList &&
+            dateUsage == '${date.year}-${date.month}-${date.day}'
+          ) {
+            occurences += 1;
+            alreadyContainedInList = true;
+          }
+        });
+
+        if (!alreadyContainedInList) {
+          borneUsageOccurences['${date.year}-${(date.month < 10) ? '0${date.month}' : date.month}-${(date.day < 10) ? '0${date.day}' : date.day}'] = 1; // Ajoute une occurence
+        }
+      }
+
+      //borneUsageOccurences.forEach((DateTime dateUsage, int occurences) {
+      //  if (dateUsage.isBefore(earlierUsage) && !dateUsage.isBefore(earlierUsage.subtract(Duration(days:30)))) {
+      //    earlierUsage = dateUsage;
+      //  }
+      //});
+
+      for (int i = 0; i < last30Days.length; i++) {
+        final DateTime date = last30Days[i];
+        final int? occurences = borneUsageOccurences['${date.year}-${(date.month < 10) ? '0${date.month}' : date.month}-${(date.day < 10) ? '0${date.day}' : date.day}'];
+          spotsList.add(FlSpot(i.toDouble(), (occurences ?? 0).toDouble()));
+      }
+    }
+
+    dataFetch();
     /*
     void displaySections(touchedSection) {
       (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
@@ -81,6 +149,6 @@ class _LineChartBorneUsageState extends State<LineChartBorneUsage> {
     }
     */
   
-    return LineChartCustom(dataFetch: dataFetch, data: null, leftAxis: null, bottomAxis: null, indicatorList: indicatorList, displayChart: true, chartTitle: widget.chartTitle);
+    return LineChartCustom(dataFetch: dataFetch, data: spotsList, leftAxis: null, bottomAxis: bottomTitleWidgets, indicatorList: [], displayChart: displayChart, chartTitle: widget.chartTitle, lineTouchDataCustom: lineTouchDataCustom); // indicatorList non nécessaire pour de la simple utilisation car couleur unique
   }
 }

@@ -70,16 +70,17 @@ class _PieChartCustomState extends State<PieChartCustom> {
                       )
                     )
                   ),
-                  Flexible(
-                    flex: 0,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.indicatorList,
+                  if (widget.indicatorList.isNotEmpty)
+                    Flexible(
+                      flex: 0,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: widget.indicatorList,
+                        ),
                       ),
                     ),
-                  ),
                 ],
             )
             : Center(

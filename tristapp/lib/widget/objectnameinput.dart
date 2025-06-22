@@ -28,7 +28,17 @@ class _ObjectNameInputState extends State<ObjectNameInput> {
             }
           );
         } else {
-          return SizedBox.shrink();
+          return RichText(
+            text: TextSpan(
+              text: "Insérez un objet dans la borne pour commencer la mesure",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                shadows: [Shadow(color: Theme.of(context).shadowColor, blurRadius: 15)]
+              )
+            )
+          );
         }
       }
     );

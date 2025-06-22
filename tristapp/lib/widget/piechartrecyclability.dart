@@ -27,12 +27,16 @@ class _PieChartRecyclabilityState extends State<PieChartRecyclability> {
       (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
       recyclableMaterialOccurences = {"Recyclable" : 0, "Non recyclable" : 0};
       for (int objetPosition = 0; objetPosition < widget.itemsHistory.length; objetPosition++) { // Fills the data Map for the chart
-        bool recyclable = widget.itemsHistory[objetPosition]['recyclability'];
-        if (recyclable) {
-          recyclableMaterialOccurences["Recyclable"] = recyclableMaterialOccurences["Recyclable"]! + 1;
+        bool? recyclable = widget.itemsHistory[objetPosition]['recyclability']; // null par défaut en cas de matériau non formaté
+        if (recyclable != null) {
+          if (recyclable) {
+            recyclableMaterialOccurences["Recyclable"] = recyclableMaterialOccurences["Recyclable"]! + 1;
+          } else {
+            recyclableMaterialOccurences["Non recyclable"] = recyclableMaterialOccurences["Non recyclable"]! + 1;
+          }
         } else {
-          recyclableMaterialOccurences["Non recyclable"] = recyclableMaterialOccurences["Non recyclable"]! + 1;
-        }  
+          totalWeight -= 1;
+        }
       }
       sectionsListMaterials.clear();
       indicatorList.clear();

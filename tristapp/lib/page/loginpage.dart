@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/main.dart';
+import 'package:tristapp/widget/linechartobjectsalongtime.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       // L'utilisateur est connecté à partir d'ici
       if (pb.authStore.isValid) {
         subscribeToObjet();
+        subscribeToSparkfun();
         fetchItemsData();
         fetchAllItemsData();
         isLoggedInNotifier.value = true;
@@ -97,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     if (error != null) Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                     SizedBox(height: 20),
+                    // DEBUG GRAPHE : LineChartBorneUsage(itemsHistory : [{'updated' : '2019-12-12 21:39:45'}, {'updated' : '2025-06-12 21:39:45'}, {'updated' : '2025-06-18 21:39:45'}, {'updated' : '2025-06-01 21:39:45'}, {'updated' : '2025-06-01 21:39:45'}, {'updated' : '2025-05-18 21:39:45'}]),
                     TextButton(
                       onPressed: () {
                         resetPass();

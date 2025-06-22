@@ -58,7 +58,7 @@ class _BinItemPageState extends State<BinItemPage> {
                 SizedBox(height: 15),
                 RichText(
                   text: TextSpan(
-                    text: "Matériau détecté : $materialId",
+                    text: "Matériau détecté : ${(materialId == null || materialId == "") ?"Aucune donnée" : materialId}",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

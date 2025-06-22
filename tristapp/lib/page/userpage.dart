@@ -25,21 +25,8 @@ class UserPage extends StatelessWidget {
           }
         ),
         SizedBox(height: 15),
-        RichText(
-          text: TextSpan(
-          style: DefaultTextStyle.of(context).style, // hérite du style global
-          children: [TextSpan(
-            text:"Dernière mesure effectuée :",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.surfaceBright,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              shadows: [Shadow(blurRadius: 15), Shadow(blurRadius: 30)]
-              ),
-            ),]
-        )),
-        SizedBox(height: 10,),
         DynamicLastMesure(),
+        SizedBox(height: 15),
         ObjectNameInput(),
       ],
     );

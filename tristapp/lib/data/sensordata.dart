@@ -28,6 +28,7 @@ Future<void> authenticateAdmin() async {
   // User line requiered for authentification in the users collection in pocketbase (collect the id and mdp of the env file)
   if (pb.authStore.isValid) {
     subscribeToObjet();
+    subscribeToSparkfun();
     fetchItemsData();
     fetchAllItemsData();
     isLoggedInNotifier.value = true;
@@ -36,7 +37,7 @@ Future<void> authenticateAdmin() async {
 
 // Subscribe to changes in any sparkfun record
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
-/*
+
 void subscribeToSparkfun() async {
   try {
     print("Subscribing to sparkfun...");
@@ -44,13 +45,13 @@ void subscribeToSparkfun() async {
       print("Event received from sparkfun!");
       Map<String, dynamic>? record = e.toJson();
       print(record);
-      sparkfunDataNotifier.value = record;
+      //sparkfunDataNotifier.value = record;
 
       if (record["action"] == "create") {
         print("Adding custom object name..."); // Ajout d'un nouvel objet si une nouvelle mesure est effectuée
         newObject(e.record);
       }
-      ;
+
     });
     print("Subscription done");
   } catch (e) {
@@ -58,7 +59,7 @@ void subscribeToSparkfun() async {
     subscribedNotifier.value = false;
   }
 }
-*/
+
 
 // IMPORTANT : on pocketbase server, use @request.auth.id != "" to allow avery connected users to acess the modifications
 void subscribeToObjet() async {
@@ -66,8 +67,7 @@ void subscribeToObjet() async {
     print("Subscribing to objet...");
     pb.collection('objet').subscribe('*', (e) async {
       print("Event received from objet : ${e.action}");
-      Map<String, dynamic>? record =
-          e.record!.toJson();
+      Map<String, dynamic>? record = e.record!.toJson();
       print(record);
       if (e.action == "create" || e.action == "update") {
         try {
@@ -135,7 +135,15 @@ void fetchItemsData() async {
     for (RecordModel record in resultList) {
       nObjectScannedUserNotifier.value += 1; // Adaptation du score en fonction du nombre d'objets scannés
       Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
-      recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      List? sparkfunRecord = recordMap['expand']['sparkfun_via_objet'];
+      if (sparkfunRecord != null) {
+        recordMap['materiau'] = sparkfunRecord[0]['material']; // Récupère le nom de matériau détecté par le knn
+        recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      } else {
+        print('Error while updating materiau and recyclabilty from sparkfun record : no sparkfun record associated with object');
+        recordMap['materiau'] = null;
+        recordMap['recyclability'] = null;
+      }
       recordsList.add(recordMap);
     }
     print(recordsList);
@@ -152,12 +160,21 @@ void fetchAllItemsData() async {
     final resultList = await pb
       .collection('objet')
       .getFullList( // On prend les objets phase 2 (donc pas d'objet null) et on veut tous les objets
+        expand: 'sparkfun_via_objet',
         sort: '-updated',
       );
     List<Map<String, dynamic>> recordsList = [];
     for (RecordModel record in resultList) {
       Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
-      recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      List? sparkfunRecord = recordMap['expand']['sparkfun_via_objet'];
+      if (sparkfunRecord != null) {
+        recordMap['materiau'] = sparkfunRecord[0]['material']; // Récupère le nom de matériau détecté par le knn
+        recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
+      } else {
+        print('Error while updating materiau and recyclabilty from sparkfun record : no sparkfun record associated with object');
+        recordMap['materiau'] = null;
+        recordMap['recyclability'] = null;
+      }
       recordsList.add(recordMap);
     }
     print(recordsList);

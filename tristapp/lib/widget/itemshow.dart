@@ -16,8 +16,8 @@ class _ItemShowState extends State<ItemShow> {
   @override
   Widget build(BuildContext context) {
     final int index = widget.nullableIndex ?? 0; // Test if null, gives 0 if it is
-    final dateItemDisplay = widget.itemsDataHistory?[index]?['updated'] != null // Date à afficher selon la présence de la donnée ou si null
-            ? "${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.itemsDataHistory?[index]?['updated']))} UTC +0" // parse converit la chaine, dateformat affiche avec un format lisible
+    final String dateItemDisplay = widget.itemsDataHistory?[index]?['updated'] != null // Date à afficher selon la présence de la donnée ou si null
+            ? DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(widget.itemsDataHistory?[index]?['updated']).toLocal()) // parse converit la chaine, dateformat affiche avec un format lisible
             : "Date inconnue";
     final displayObjectFormat = widget.itemsDataHistory?[index]?['nom_objet'] != null
             ? "Objet "
