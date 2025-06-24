@@ -16,12 +16,12 @@ class UserPage extends StatelessWidget {
     
     return Column(
       children: [
-        UserCard(refText: "Nom d'utilisateur : $userName"),
-        UserCard(refText: "identifiant : $userId"),
+        UserCard(refText: "Nom d'utilisateur : $userName", icon : Icons.perm_identity),
+        UserCard(refText: "identifiant : $userId", icon : Icons.account_tree_outlined),
         ValueListenableBuilder(
           valueListenable : nObjectScannedUserNotifier,
           builder : (context, nObjectScannedUser, child) {
-            return UserCard(refText: "Score : $nObjectScannedUser"); // Le score équivaut au nombre d'objets différents scannés par l'utilisateur
+            return UserCard(refText: "Score : $nObjectScannedUser", icon : Icons.analytics_outlined); // Le score équivaut au nombre d'objets différents scannés par l'utilisateur
           }
         ),
         SizedBox(height: 15),

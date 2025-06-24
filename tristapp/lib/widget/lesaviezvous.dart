@@ -74,6 +74,9 @@ class LeSaviezVous extends StatelessWidget {
       "pes":[
         "Le saviez-vous?\nLe polyester sèche plus vite que le coton.",
         "Le saviez-vous?\nIl peut être 100 % recyclé !\nMais il peut mettre plus de 200 ans à se décomposer dans la nature...\n D’où l’intérêt de le recycler!",
+      ],
+      "verre":[
+        "Le saviez-vous ?\nLe verre mettrait 3 ou 4 millénaires à se décomposer dans la nature sans recyclage.",
       ]
     };
     String? displayInfoText;

@@ -20,7 +20,7 @@ class _SigninPageState extends State<SigninPage> {
 
   Future<void> signin() async {
     try {
-      await pb.collection('users').create( // Needs to have access to create user even unauthentified !
+      await pb.collection('users').create( // Needs to have access to create user even unauthentified ! -> API RULE CREATE RECORD : @request.auth.id != "" || @request.auth.id = ""
         body: {
           "email" : idController.text, 
           "name" : nameController.text,
@@ -42,7 +42,7 @@ class _SigninPageState extends State<SigninPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           RichText(text: TextSpan(
-            text: "Inscription PocketBase",
+            text: "Inscription Tristan",
             style: TextStyle(
               color: Theme.of(context).colorScheme.surface,
               fontWeight: FontWeight.bold,

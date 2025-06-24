@@ -21,17 +21,26 @@ class _PieChartMaterialsState extends State<PieChartMaterials> {
   Widget build(BuildContext context) {
     final List<PieChartSectionData> sectionsListMaterials = [];
     final List<Widget> indicatorList = [];
-    double totalWeight = widget.itemsHistory.length.toDouble(); // Poid total équivalent à la quantité d'objets dans la liste
+    List<Map<String, dynamic>> itemsNonNullHistory = [];
+    for (var item in widget.itemsHistory) {
+      if (item['materiau'] != null) {
+        itemsNonNullHistory.add(item);
+      }
+    }
+    double totalWeight = itemsNonNullHistory.length.toDouble(); // Poid total équivalent à la quantité d'objets dans la liste
 
     void displaySections(touchedSection) {
-      (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
+      displayChart = (itemsNonNullHistory.isNotEmpty) ? true : false; // Avoid displaying widget if no items or all null materials
+
       materialOccurences.clear();
-      for (int objetPosition = 0; objetPosition < widget.itemsHistory.length; objetPosition++) { // Fills the data Map for the chart
-        String materialName = widget.itemsHistory[objetPosition]['materiau'];
+      for (int objetPosition = 0; objetPosition < itemsNonNullHistory.length; objetPosition++) { // Fills the data Map for the chart
+        String? materialName = itemsNonNullHistory[objetPosition]['materiau'];
         if (materialOccurences.containsKey(materialName)) {
-          materialOccurences[materialName] = materialOccurences[materialName]! + 1;
+          materialOccurences[materialName!] = materialOccurences[materialName]! + 1;
         } else {
-          materialOccurences[materialName] = 1;
+          if (materialName != null) {
+            materialOccurences[materialName] = 1;
+          }
         }  
       }
       sectionsListMaterials.clear();

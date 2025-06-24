@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/page/datapage.dart';
+import 'package:tristapp/widget/dotchartpca.dart';
 import 'package:tristapp/widget/linechartobjectsalongtime.dart';
 import 'package:tristapp/widget/piechartmaterials.dart';
 import 'package:tristapp/widget/piechartrecyclability.dart';
@@ -43,7 +44,7 @@ class _ChartsPageState extends State<ChartsPage> {
     },
     'recyclability' : {
       'pageTitle' : "Recyclabilité",
-      'buttons' : <String>['materials', 'borneUsage'],
+      'buttons' : <String>['materials', 'latestPca'],
       'chartsToDisplay' : <StatefulWidget>[
         ValueListenableBuilder<List<Map<String, dynamic>>>( // Reconstrution du widget automatique à chaque changement des data
           valueListenable: itemsHistoryNotifier,
@@ -61,16 +62,41 @@ class _ChartsPageState extends State<ChartsPage> {
     },
     'borneUsage' : {
       'pageTitle' : "Utilisation",
-      'buttons' : <String>['recyclability', 'materials'],
+      'buttons' : <String>['latestPca', 'materials'],
       'chartsToDisplay' : <StatefulWidget>[
         ValueListenableBuilder<List<Map<String, dynamic>>>( // Reconstrution du widget automatique à chaque changement des data
           valueListenable: itemsHistoryNotifier,
           builder: (context, itemsHistory, child) {
-            return LineChartBorneUsage(itemsHistory: itemsHistory, chartTitle: "Utilisation de la borne");
+            return LineChartBorneUsage(itemsHistory: itemsHistory, chartTitle: "Utilisation de la borne (30 derniers jours)");
           }
         ),
       ]
     },
+    'latestPca' : {
+      'pageTitle' : "PCA dernière mesure",
+      'buttons' : <String>['recyclability', 'borneUsage'],
+      'chartsToDisplay' : <StatefulWidget>[
+        ValueListenableBuilder<List<Map<String, dynamic>>>( // Reconstrution du widget automatique à chaque changement des data
+          valueListenable: itemsHistoryNotifier,
+          builder: (context, itemsHistory, child) {
+            return ValueListenableBuilder<Map<String, dynamic>?>(
+              valueListenable: itemsDataNotifier,
+              builder: (context, itemsData, child) {
+                if (itemsData != null) {
+                  return DotChartPca(itemsHistory: [itemsData], chartTitle: "A VENIR : PCA sur la mesure effectuée");
+                } else {
+                  if (itemsHistory.isNotEmpty) {
+                    return DotChartPca(itemsHistory: itemsHistory, chartTitle: "A VENIR : PCA sur la dernière mesure enregistrée");
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                }
+              }
+            );
+          }
+        )
+      ]
+    }
   };
 
   @override

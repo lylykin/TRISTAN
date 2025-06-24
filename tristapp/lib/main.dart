@@ -16,7 +16,7 @@ ValueNotifier<bool> isLoggedInNotifier = ValueNotifier(pb.authStore.isValid); //
 ValueNotifier<bool> isSigningInNotifier = ValueNotifier(false); // Rend compte de si l'utilisateur se connecte ou s'inscrit
 
 // build app exe using : flutter build windows
-// file will be located from root in \build\windows\runner\Release\
+// file will be located from root in \build\windows\x64\runner\Release\
 // Release file should be the one shared to share app
 Future<void> main() async {
   await dotenv.load(fileName: "secret_dont_look_at_me.env");
@@ -83,6 +83,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    //precacheImage(const AssetImage('assets/bgtrue.svg'), context);
+    //precacheImage(const AssetImage('assets/bob.svg'), context);
+    //precacheImage(const AssetImage('assets/box-tristan1.svg'), context);
+    //precacheImage(const AssetImage('assets/box-tristan2.svg'), context);
+    //precacheImage(const AssetImage('assets/logo.png'), context);
+    //precacheImage(const AssetImage('assets/logo2.png'), context);
     pagelist = [
       UserPage(),
       BinSelectPage(stationList: stationList),

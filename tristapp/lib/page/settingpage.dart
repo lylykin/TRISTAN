@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tristapp/widget/disconnectbutton.dart';
+import 'package:tristapp/widget/latesterrorsdisplay.dart';
 import 'package:tristapp/widget/manualsubscribe.dart';
 
 class SettingPage extends StatelessWidget {
@@ -81,10 +82,11 @@ class SettingPage extends StatelessWidget {
                     )
                   ],
                 ),
-                
               ),
             )
-          )
+          ),
+          SizedBox(height: 20),
+          LatestErrorsDisplay(),
         ],
       ),
     );

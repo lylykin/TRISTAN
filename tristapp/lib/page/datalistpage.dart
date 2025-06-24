@@ -3,11 +3,19 @@ import 'package:tristapp/widget/reloadbutton.dart';
 import 'package:tristapp/widget/itemshow.dart';
 import 'package:tristapp/data/sensordata.dart';
 import 'package:tristapp/page/datapage.dart';
+import 'package:tristapp/widget/searchbar.dart';
 
 // Liaison dynamique à implémenter (sur les widgets child également)
 
-class DataListPage extends StatelessWidget {
+class DataListPage extends StatefulWidget {
   const DataListPage({super.key});
+
+  @override
+  State<DataListPage> createState() => _DataListPageState();
+}
+
+class _DataListPageState extends State<DataListPage> {
+  List<Map<String, dynamic>>? filteredList;
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +25,7 @@ class DataListPage extends StatelessWidget {
         return ValueListenableBuilder<List<Map<String, dynamic>?>>(
           valueListenable: itemsHistoryNotifier,
           builder: (context, itemsDataHistory, child) {
+            final itemsToDisplay = filteredList ?? itemsDataHistory;
             return Scaffold(
               appBar: AppBar(
                 title: Text("Données mesurées (toutes bornes)"),
@@ -44,11 +53,24 @@ class DataListPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  DataSearchBar(
+                    itemsList: itemsDataHistory, 
+                    onSearchResult: (result) {
+                      setState(() {
+                        filteredList = result;
+                      });
+                    },
+                    onCancelModifyers: () {
+                      setState(() {
+                        filteredList = null;
+                      });
+                    },
+                  ),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: itemsDataHistory.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
+                      itemCount: itemsToDisplay.length, // Nombre de lignes dans Pocketbase pour les mesures sparkfun
                       itemBuilder: (BuildContext context, int index) {
-                        return ItemShow(nullableIndex: index, itemsDataHistory : itemsDataHistory);
+                        return ItemShow(nullableIndex: index, itemsDataHistory : itemsToDisplay);
                       },
                     ),
                   ),

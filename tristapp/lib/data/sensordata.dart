@@ -15,6 +15,7 @@ final ValueNotifier<bool> displayInputObjectNotifier = ValueNotifier(false);
 final ValueNotifier<String> inputObjectNotifier = ValueNotifier("");
 final ValueNotifier<bool> subscribedNotifier = ValueNotifier(true);
 final ValueNotifier<int> nObjectScannedUserNotifier = ValueNotifier(0);
+final ValueNotifier<List<String>> latestPocketbaseErrorListNotifier = ValueNotifier([]);
 
 Completer<String>? _currentInputCompleter; // Collecte les entrées de l'utilisateur
 
@@ -45,18 +46,18 @@ void subscribeToSparkfun() async {
       print("Event received from sparkfun!");
       Map<String, dynamic>? record = e.toJson();
       print(record);
-      //sparkfunDataNotifier.value = record;
 
       if (record["action"] == "create") {
         print("Adding custom object name..."); // Ajout d'un nouvel objet si une nouvelle mesure est effectuée
         newObject(e.record);
+        fetchItemsData();
       }
 
     });
     print("Subscription done");
   } catch (e) {
-    print('Error while subscribing to PocketBase : $e');
     subscribedNotifier.value = false;
+    latestPocketbaseErrorListNotifier.value.add('Error while subscribing to PocketBase : $e');
   }
 }
 
@@ -87,14 +88,14 @@ void subscribeToObjet() async {
           print(record);
           print("Updated realtime measurement");
         } catch (err) {
-          print("Error while updating realtime measurement : $err");
+          latestPocketbaseErrorListNotifier.value.add('Error while updating realtime measurement : $err');
         }
       }
     });
     print("Subscription done");
   } catch (e) {
-    print('Error while subscribing to PocketBase : $e');
     subscribedNotifier.value = false;
+    latestPocketbaseErrorListNotifier.value.add('Error while subscribing to PocketBase : $e');
   }
 }
 
@@ -137,10 +138,9 @@ void fetchItemsData() async {
       Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
       List? sparkfunRecord = recordMap['expand']['sparkfun_via_objet'];
       if (sparkfunRecord != null) {
-        recordMap['materiau'] = sparkfunRecord[0]['material']; // Récupère le nom de matériau détecté par le knn
         recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
       } else {
-        print('Error while updating materiau and recyclabilty from sparkfun record : no sparkfun record associated with object');
+        latestPocketbaseErrorListNotifier.value.add('Error while updating recyclabilty from sparkfun record : no sparkfun record associated with object $recordMap');
         recordMap['materiau'] = null;
         recordMap['recyclability'] = null;
       }
@@ -150,7 +150,7 @@ void fetchItemsData() async {
     itemsHistoryNotifier.value = recordsList;
     print("Fetch done for objet");
   } catch (e) {
-    print('Error while fetching full list from PocketBase : $e');
+    latestPocketbaseErrorListNotifier.value.add('Error while fetching full list from PocketBase : $e');
   }
 }
 
@@ -168,20 +168,18 @@ void fetchAllItemsData() async {
       Map<String, dynamic> recordMap = record.toJson(); // Convertis les élements RecordModel de la liste en dictionnaires (Map)
       List? sparkfunRecord = recordMap['expand']['sparkfun_via_objet'];
       if (sparkfunRecord != null) {
-        recordMap['materiau'] = sparkfunRecord[0]['material']; // Récupère le nom de matériau détecté par le knn
         recordMap['recyclability'] = await isRecyclable(recordMap['materiau']); // Ajoute la recyclabilité de l'objet récupéré
       } else {
-        print('Error while updating materiau and recyclabilty from sparkfun record : no sparkfun record associated with object');
+        latestPocketbaseErrorListNotifier.value.add('Error while updating recyclabilty from sparkfun record : no sparkfun record associated with object $recordMap');
         recordMap['materiau'] = null;
         recordMap['recyclability'] = null;
       }
       recordsList.add(recordMap);
     }
-    print(recordsList);
     allUsersItemsHistoryNotifier.value = recordsList;
     print("Fetch done for objet");
   } catch (e) {
-    print('Error while fetching full list for all users from PocketBase : $e');
+    latestPocketbaseErrorListNotifier.value.add('Error while fetching full list for all users from PocketBase : $e');
   }
 }
 
@@ -238,13 +236,19 @@ void newObject(lastMesure) async {
     }
     // Récupère l'id de la dernière mesure insérée et lui ajoute l'objet inséré par l'utilisateur
     Map<String, dynamic> lastMesureRecord =
-        lastMesure.toJson(); // On récupère l'élement sous forme de dico
-    pb.collection("sparkfun").update(
+      lastMesure.toJson(); // On récupère l'élement sous forme de dico
+    await pb.collection("sparkfun").update(
       lastMesureRecord['id'],
       body: <String, dynamic>{'objet': objetId},
     );
+    pb.collection("objet").update(
+      objetId,
+      body: <String, dynamic>{'materiau': lastMesureRecord['material']},
+    ); // Récupère le nom de matériau détecté par le knn et l'ajoute dans la table objet
+    print("Updated objet's material from knn and added objet to sparkfun measurement");
+
   } catch (e) {
-    print('Error while updating objet using user input : $e');
+    latestPocketbaseErrorListNotifier.value.add('Error while updating objet using user input : $e');
   }
 }
 
@@ -299,7 +303,7 @@ Future<bool?> isRecyclable(String materiauId) async {
     print("Recyclability found");
     return recyclability;
   } catch (e) {
-    print('Error while fetching full list from PocketBase : $e');
+    latestPocketbaseErrorListNotifier.value.add('Error while fetching full list from PocketBase : $e');
     return null;
   }
 }

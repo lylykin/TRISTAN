@@ -3,25 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:tristapp/widget/indicator.dart';
 
 
-class LineChartCustom extends StatefulWidget {
+class DotChartCustom extends StatefulWidget {
   final Function dataFetch;
-  final List<FlSpot> data;
+  final List<ScatterSpot> data;
   final Widget Function(double, TitleMeta)? leftAxis;
   final Widget Function(double, TitleMeta)? bottomAxis;
   final List<Indicator> indicatorList;
   final bool displayChart;
   final String? chartTitle;
   final LineTouchData lineTouchDataCustom;
-  final Widget? bottomAxisNameWidget;
-  final Widget? leftAxisNameWidget;
   
-  const LineChartCustom({super.key, required this.dataFetch, required this.data, required this.leftAxis, required this.bottomAxis, required this.indicatorList, this.displayChart = false, this.chartTitle, this.lineTouchDataCustom = const LineTouchData(), this.bottomAxisNameWidget, this.leftAxisNameWidget});
+  const DotChartCustom({super.key, required this.dataFetch, required this.data, this.leftAxis, this.bottomAxis, required this.indicatorList, this.displayChart = false, this.chartTitle = "Graphique sans nom", this.lineTouchDataCustom = const LineTouchData()});
 
   @override
-  State<LineChartCustom> createState() => _LineChartCustomState();
+  State<DotChartCustom> createState() => _DotChartCustomState();
 }
 
-class _LineChartCustomState extends State<LineChartCustom> {
+class _DotChartCustomState extends State<DotChartCustom> {
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +52,8 @@ class _LineChartCustomState extends State<LineChartCustom> {
                   SizedBox( // Nécessaire comme le chart dépasse du container si aucune limite spécifiée
                     width: 400,
                     height: 300,
-                    child: LineChart(
-                      LineChartData(
+                    child: ScatterChart(
+                      ScatterChartData(
                         titlesData: FlTitlesData(
                           topTitles: AxisTitles(
                             sideTitles: SideTitles(
@@ -68,7 +66,6 @@ class _LineChartCustomState extends State<LineChartCustom> {
                             )
                           ),
                           bottomTitles: AxisTitles(
-                            axisNameWidget: widget.bottomAxisNameWidget,
                             sideTitles: SideTitles(
                               showTitles: true,
                               interval: 1,
@@ -76,7 +73,6 @@ class _LineChartCustomState extends State<LineChartCustom> {
                             ),
                           ),
                           leftTitles: AxisTitles(
-                            axisNameWidget: widget.leftAxisNameWidget,
                             sideTitles: SideTitles(
                               showTitles: true,
                               //getTitlesWidget: leftTitleWidgets,
@@ -87,20 +83,19 @@ class _LineChartCustomState extends State<LineChartCustom> {
                         ),
                         gridData: FlGridData(
                           show: true,
-                          drawVerticalLine: false,
-                          horizontalInterval: 1,
-                          checkToShowHorizontalLine: (double value) {
-                            return value != 0 && value%2 == 0; // Toutes les 2 valeurs à partir de 0 exclu
-                          },
+                          drawHorizontalLine: true,
+                          checkToShowHorizontalLine: (value) => true,
+                          getDrawingHorizontalLine: (value) => FlLine(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          drawVerticalLine: true,
+                          checkToShowVerticalLine: (value) => true,
+                          getDrawingVerticalLine: (value) => FlLine(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: widget.data
-                          )
-                        ],
-                        minX: 0,
-                        minY: 0,
-                        lineTouchData: widget.lineTouchDataCustom
+                        scatterSpots: widget.data,
+                        //lineTouchData: widget.lineTouchDataCustom
                       )
                     )
                   ),

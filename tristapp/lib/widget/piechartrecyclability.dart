@@ -21,21 +21,26 @@ class _PieChartRecyclabilityState extends State<PieChartRecyclability> {
   Widget build(BuildContext context) {
     final List<PieChartSectionData> sectionsListMaterials = [];
     final List<Widget> indicatorList = [];
-    double totalWeight = widget.itemsHistory.length.toDouble(); // Poid total équivalent à la quantité d'objets dans la liste
+    List<Map<String, dynamic>> itemsNonNullRecyclabilityHistory = [];
+    for (var item in widget.itemsHistory) {
+      if (item['recyclability'] != null) {
+        itemsNonNullRecyclabilityHistory.add(item);
+      }
+    }
+    double totalWeight = itemsNonNullRecyclabilityHistory.length.toDouble(); // Poid total équivalent à la quantité d'objets dans la liste
 
     void displaySections(touchedSection) {
-      (widget.itemsHistory.isNotEmpty) ? displayChart = true : displayChart = false; // Avoid displaying widget if no items
+      displayChart = (itemsNonNullRecyclabilityHistory.isNotEmpty) ? true : false; // Avoid displaying widget if no items or all null recyclability
+
       recyclableMaterialOccurences = {"Recyclable" : 0, "Non recyclable" : 0};
-      for (int objetPosition = 0; objetPosition < widget.itemsHistory.length; objetPosition++) { // Fills the data Map for the chart
-        bool? recyclable = widget.itemsHistory[objetPosition]['recyclability']; // null par défaut en cas de matériau non formaté
+      for (int objetPosition = 0; objetPosition < itemsNonNullRecyclabilityHistory.length; objetPosition++) { // Fills the data Map for the chart
+        bool? recyclable = itemsNonNullRecyclabilityHistory[objetPosition]['recyclability']; // null par défaut en cas de matériau non formaté
         if (recyclable != null) {
           if (recyclable) {
             recyclableMaterialOccurences["Recyclable"] = recyclableMaterialOccurences["Recyclable"]! + 1;
           } else {
             recyclableMaterialOccurences["Non recyclable"] = recyclableMaterialOccurences["Non recyclable"]! + 1;
           }
-        } else {
-          totalWeight -= 1;
         }
       }
       sectionsListMaterials.clear();
