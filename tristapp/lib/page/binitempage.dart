@@ -23,8 +23,8 @@ class _BinItemPageState extends State<BinItemPage> {
     final Map<String, dynamic> gps = (widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'] != null)
       ? widget.itemsDataHistory?[index]?['expand']['sparkfun_via_objet'][0]['expand']['borne'] // Une seule mesure par objet donc [0] séléctionne l'unique valeur de la liste 'sparkfun_via_objet'
       : {'lat_actuel' : null, 'long_actuel' : null};
-    String latDisplay = (gps['lat_actuel'] == null || gps['lat_actuel'] == "") ? "Aucune donnée" : gps['lat_actuel'];
-    String longDisplay = (gps['long_actuel'] == null || gps['long_actuel'] == "") ? "Aucune donnée" : gps['long_actuel'];
+    String latDisplay = (gps['lat_actuel'] == null || gps['lat_actuel'] == 0.0) ? "Aucune donnée" : gps['lat_actuel'].toString();
+    String longDisplay = (gps['long_actuel'] == null || gps['long_actuel'] == 0.0) ? "Aucune donnée" : gps['long_actuel'].toString();
 
     return Scaffold(
       appBar: AppBar(
